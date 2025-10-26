@@ -40,28 +40,31 @@ function uilib:createwindow(title, size)
 	titlelbl.TextXAlignment = Enum.TextXAlignment.Left
 	titlelbl.Parent = titlebar
 
-	local close = Instance.new("ImageButton")
-	close.Size = UDim2.new(0,28,0,28)
-	close.Position = UDim2.new(1,-32,0,4)
+local close = Instance.new("ImageButton")
+close.Size = UDim2.new(0,28,0,28)
+close.Position = UDim2.new(1,-32,0,4)
+close.BackgroundColor3 = Color3.fromRGB(30,30,30)
+close.Transparency = 1
+close.Image = "rbxassetid://13388533439"
+close.ScaleType = Enum.ScaleType.Fit
+close.Parent = titlebar
+
+local closeStroke = Instance.new("UIStroke")
+closeStroke.Color = Color3.fromRGB(128,128,128)
+closeStroke.Thickness = 1
+closeStroke.Parent = close
+
+close.MouseEnter:Connect(function()
+	close.BackgroundColor3 = Color3.fromRGB(50,50,50)
+end)
+close.MouseLeave:Connect(function()
 	close.BackgroundColor3 = Color3.fromRGB(30,30,30)
-	close.Image = "rbxassetid://7072727365"
-	close.ScaleType = Enum.ScaleType.Fit
-	close.Parent = titlebar
+end)
 
-	local closeStroke = Instance.new("UIStroke")
-	closeStroke.Color = Color3.fromRGB(128,128,128)
-	closeStroke.Thickness = 1
-	closeStroke.Parent = close
+close.MouseButton1Click:Connect(function()
+	frame:Destroy()
+end)
 
-	close.MouseEnter:Connect(function()
-		close.BackgroundColor3 = Color3.fromRGB(50,50,50)
-	end)
-	close.MouseLeave:Connect(function()
-		close.BackgroundColor3 = Color3.fromRGB(30,30,30)
-	end)
-	close.MouseButton1Click:Connect(function()
-		frame:Destroy()
-	end)
 
 	local content = Instance.new("ScrollingFrame")
 	content.Size = UDim2.new(1,-16,1,-46)
