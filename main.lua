@@ -116,6 +116,16 @@ function uilib:createwindow(title, size)
 	win.frame = frame
 	win.content = content
 
+	-- toggle visibility K tuşu
+	local visible = true
+	uis.InputBegan:Connect(function(input,processed)
+		if processed then return end
+		if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.K then
+			visible = not visible
+			win.frame.Visible = visible
+		end
+	end)
+
 	function win:addlabel(text)
 		local lbl = Instance.new("TextLabel")
 		lbl.Size = UDim2.new(1,0,0,24)
@@ -143,28 +153,6 @@ function uilib:createwindow(title, size)
 			if callback then callback() end
 		end)
 		return btn
-	end
-
-	function win:addtab(name)
-		local tab = Instance.new("Frame")
-		tab.Size = UDim2.new(1,0,0,0)
-		tab.BackgroundColor3 = Color3.fromRGB(35,35,35)
-		tab.BorderSizePixel = 0
-		tab.Parent = content
-
-		local label = Instance.new("TextLabel")
-		label.Size = UDim2.new(1,0,0,28)
-		label.BackgroundTransparency = 1
-		label.Text = name or "tab"
-		label.TextColor3 = Color3.fromRGB(255,255,255)
-		label.Font = Enum.Font.Code
-		label.TextSize = 16
-		label.Parent = tab
-
-		local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-		ts:Create(tab,tweenInfo,{Size=UDim2.new(1,0,0,80)}):Play()
-
-		return tab
 	end
 
 	return win
