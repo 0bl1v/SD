@@ -59,7 +59,6 @@ function uilib:createwindow(title, size)
 	close.MouseLeave:Connect(function()
 		close.BackgroundColor3 = Color3.fromRGB(30,30,30)
 	end)
-
 	close.MouseButton1Click:Connect(function()
 		frame:Destroy()
 	end)
@@ -141,11 +140,31 @@ function uilib:createwindow(title, size)
 		btn.TextSize = 16
 		btn.Parent = content
 		btn.MouseButton1Click:Connect(function()
-			if callback then
-				callback()
-			end
+			if callback then callback() end
 		end)
 		return btn
+	end
+
+	function win:addtab(name)
+		local tab = Instance.new("Frame")
+		tab.Size = UDim2.new(1,0,0,0)
+		tab.BackgroundColor3 = Color3.fromRGB(35,35,35)
+		tab.BorderSizePixel = 0
+		tab.Parent = content
+
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1,0,0,28)
+		label.BackgroundTransparency = 1
+		label.Text = name or "tab"
+		label.TextColor3 = Color3.fromRGB(255,255,255)
+		label.Font = Enum.Font.Code
+		label.TextSize = 16
+		label.Parent = tab
+
+		local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		ts:Create(tab,tweenInfo,{Size=UDim2.new(1,0,0,80)}):Play()
+
+		return tab
 	end
 
 	return win
