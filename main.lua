@@ -1,45 +1,47 @@
-local uiLib = {}
+-- dosya: ReplicatedStorage.uilib (module script)
+local uilib = {}
 local ts = game:GetService("TweenService")
 local uis = game:GetService("UserInputService")
+local players = game:GetService("Players")
 
-uiLib.ScreenGui = Instance.new("ScreenGui")
-uiLib.ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-uiLib.ScreenGui.Name = "myUiLib"
+uilib.screen = Instance.new("ScreenGui")
+uilib.screen.Name = "uilibScreen"
+uilib.screen.Parent = players.LocalPlayer:WaitForChild("PlayerGui")
 
-function uiLib:CreateWindow(titleText, size)
+function uilib:createwindow(title, size)
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 0, 0, 0)
-    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    frame.AnchorPoint = Vector2.new(0.5, 0.5)
-    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    frame.Parent = self.ScreenGui
-    frame.Name = titleText or "Window"
+    frame.Name = (title or "window"):gsub("%s","")
+    frame.Size = UDim2.new(0,0,0,0)
+    frame.Position = UDim2.new(0.5,0,0.5,0)
+    frame.AnchorPoint = Vector2.new(0.5,0.5)
+    frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    frame.Parent = self.screen
 
     local stroke = Instance.new("UIStroke")
-    stroke.Color = Color3.fromRGB(128, 128, 128)
+    stroke.Color = Color3.fromRGB(128,128,128)
     stroke.Thickness = 2
     stroke.Parent = frame
 
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, -40, 0, 30)
-    title.Position = UDim2.new(0, 0, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = titleText or "Window"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.Code
-    title.TextSize = 18
-    title.Parent = frame
+    local titlelbl = Instance.new("TextLabel")
+    titlelbl.Size = UDim2.new(1,-40,0,30)
+    titlelbl.Position = UDim2.new(0,0,0,0)
+    titlelbl.BackgroundTransparency = 1
+    titlelbl.Text = title or "window"
+    titlelbl.TextColor3 = Color3.fromRGB(255,255,255)
+    titlelbl.Font = Enum.Font.Code
+    titlelbl.TextSize = 18
+    titlelbl.Parent = frame
 
     local close = Instance.new("ImageButton")
-    close.Size = UDim2.new(0, 30, 0, 30)
-    close.Position = UDim2.new(1, -30, 0, 0)
-    close.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    close.Size = UDim2.new(0,30,0,30)
+    close.Position = UDim2.new(1,-30,0,0)
+    close.BackgroundColor3 = Color3.fromRGB(30,30,30)
     close.Image = "rbxassetid://7072727365"
     close.ScaleType = Enum.ScaleType.Fit
     close.Parent = frame
 
     local closeStroke = Instance.new("UIStroke")
-    closeStroke.Color = Color3.fromRGB(128, 128, 128)
+    closeStroke.Color = Color3.fromRGB(128,128,128)
     closeStroke.Thickness = 1
     closeStroke.Parent = close
 
@@ -48,17 +50,15 @@ function uiLib:CreateWindow(titleText, size)
     end)
 
     local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local tween = ts:Create(frame, tweenInfo, {Size = size or UDim2.new(0, 250, 0, 600), Position = UDim2.new(0.5, 0, 0.5, 0)})
-    tween:Play()
+    ts:Create(frame, tweenInfo, {Size = size or UDim2.new(0,250,0,500)}):Play()
 
     local dragging = false
-    local dragInput, mousePos, framePos
-
-    title.InputBegan:Connect(function(input)
+    local dragInput, dragStart, startPos
+    titlelbl.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
-            mousePos = input.Position
-            framePos = frame.Position
+            dragStart = input.Position
+            startPos = frame.Position
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
@@ -66,21 +66,19 @@ function uiLib:CreateWindow(titleText, size)
             end)
         end
     end)
-
-    title.InputChanged:Connect(function(input)
+    titlelbl.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement then
             dragInput = input
         end
     end)
-
     uis.InputChanged:Connect(function(input)
         if input == dragInput and dragging then
-            local delta = input.Position - mousePos
-            frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
 
     return frame
 end
 
-return uiLib
+return uilib
