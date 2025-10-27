@@ -54,8 +54,8 @@ function Library:CreateHub(hubName)
 	MainFrame.Name = "MainFrame"
 	MainFrame.BackgroundColor3 = CONFIG.Colors.Background
 	MainFrame.BorderSizePixel = 0
-	MainFrame.Position = UDim2.new(0.2, 0, 0.15, 0)
-	MainFrame.Size = UDim2.new(0, 650, 0, 450)
+	MainFrame.Position = UDim2.new(0.265, 0, 0.245, 0)
+	MainFrame.Size = UDim2.new(0, 514, 0, 328)
 	MainFrame.Parent = ScreenGui
 	MainFrame.ClipsDescendants = true
 	
