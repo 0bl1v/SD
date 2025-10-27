@@ -1,16 +1,8 @@
--- UI Library v1.2
--- DarkLua Compatible - Obfuscated Version Ready
--- Modern Roblox UI Library - No Corners, With Strokes
-
 local Library = {}
 Library.__index = Library
-
--- Services
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-
--- Configuration
 local CONFIG = {
 	AnimationSpeed = 0.3,
 	Colors = {
@@ -29,7 +21,6 @@ local CONFIG = {
 	}
 }
 
--- Utility Functions
 local function createStroke(parent, color, thickness)
 	local stroke = Instance.new("UIStroke")
 	stroke.Color = color or CONFIG.Colors.Stroke
@@ -111,8 +102,6 @@ function Library:CreateHub(hubName)
 	end)
 	
 	CloseDetector.MouseButton1Click:Connect(function()
-		createTween(MainFrame, {Size = UDim2.new(0, 0, 0, 0)}, 0.15):Play()
-		wait(0.15)
 		ScreenGui:Destroy()
 	end)
 	
