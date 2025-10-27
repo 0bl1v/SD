@@ -1,8 +1,10 @@
 local Library = {}
 Library.__index = Library
+
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+
 local CONFIG = {
 	AnimationSpeed = 0.3,
 	Colors = {
@@ -37,20 +39,17 @@ local function createTween(object, goal, duration)
 	)
 end
 
--- Main Hub Creation
 function Library:CreateHub(hubName)
 	local Hub = {}
 	Hub.Tabs = {}
 	Hub.CurrentTab = nil
 	
-	-- Create ScreenGui
 	local ScreenGui = Instance.new("ScreenGui")
 	ScreenGui.Name = "UILibrary_" .. tostring(math.random(1000, 9999))
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ScreenGui.ResetOnSpawn = false
 	ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 	
-	-- Main Frame
 	local MainFrame = Instance.new("Frame")
 	MainFrame.Name = "MainFrame"
 	MainFrame.BackgroundColor3 = CONFIG.Colors.Background
@@ -60,7 +59,6 @@ function Library:CreateHub(hubName)
 	MainFrame.Parent = ScreenGui
 	MainFrame.ClipsDescendants = true
 	
-	-- Title
 	local TitleLabel = Instance.new("TextLabel")
 	TitleLabel.Name = "Title"
 	TitleLabel.BackgroundTransparency = 1
@@ -105,7 +103,6 @@ function Library:CreateHub(hubName)
 		ScreenGui:Destroy()
 	end)
 	
-	-- Tab Container (Left side)
 	local TabContainer = Instance.new("Frame")
 	TabContainer.Name = "TabContainer"
 	TabContainer.BackgroundTransparency = 1
@@ -118,7 +115,6 @@ function Library:CreateHub(hubName)
 	TabLayout.Padding = UDim.new(0, 8)
 	TabLayout.Parent = TabContainer
 	
-	-- Left Separator
 	local LeftSeparator = Instance.new("Frame")
 	LeftSeparator.BackgroundColor3 = CONFIG.Colors.Separator
 	LeftSeparator.BorderSizePixel = 0
@@ -126,7 +122,6 @@ function Library:CreateHub(hubName)
 	LeftSeparator.Size = UDim2.new(0, 1, 0, 291)
 	LeftSeparator.Parent = MainFrame
 	
-	-- Right Separator
 	local RightSeparator = Instance.new("Frame")
 	RightSeparator.BackgroundColor3 = CONFIG.Colors.Separator
 	RightSeparator.BorderSizePixel = 0
@@ -134,7 +129,6 @@ function Library:CreateHub(hubName)
 	RightSeparator.Size = UDim2.new(0, 1, 0, 291)
 	RightSeparator.Parent = MainFrame
 	
-	-- Content Container (Right side)
 	local ContentContainer = Instance.new("Frame")
 	ContentContainer.Name = "ContentContainer"
 	ContentContainer.BackgroundTransparency = 1
@@ -142,11 +136,10 @@ function Library:CreateHub(hubName)
 	ContentContainer.Size = UDim2.new(0, 399, 0, 260)
 	ContentContainer.Parent = MainFrame
 	
-	-- Make Draggable
 	local dragging, dragInput, dragStart, startPos
 	
 	MainFrame.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			dragging = true
 			dragStart = input.Position
 			startPos = MainFrame.Position
@@ -160,7 +153,7 @@ function Library:CreateHub(hubName)
 	end)
 	
 	UserInputService.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			dragInput = input
 		end
 	end)
@@ -185,12 +178,10 @@ function Library:CreateHub(hubName)
 	return setmetatable(Hub, {__index = Library})
 end
 
--- Create Tab
 function Library:CreateTab(tabName)
 	local Tab = {}
 	Tab.Elements = {}
 	
-	-- Tab Button
 	local TabButton = Instance.new("TextButton")
 	TabButton.Name = tabName
 	TabButton.BackgroundTransparency = 1
@@ -202,7 +193,6 @@ function Library:CreateTab(tabName)
 	TabButton.TextXAlignment = Enum.TextXAlignment.Left
 	TabButton.Parent = self.TabContainer
 	
-	-- Tab Content Frame
 	local TabContent = Instance.new("ScrollingFrame")
 	TabContent.Name = tabName .. "_Content"
 	TabContent.BackgroundTransparency = 1
@@ -220,7 +210,6 @@ function Library:CreateTab(tabName)
 	ContentLayout.Padding = UDim.new(0, 8)
 	ContentLayout.Parent = TabContent
 	
-	-- Tab Activation
 	TabButton.MouseButton1Click:Connect(function()
 		for _, tab in pairs(self.Tabs) do
 			tab.Button.TextColor3 = CONFIG.Colors.TabInactive
@@ -232,7 +221,6 @@ function Library:CreateTab(tabName)
 		self.CurrentTab = Tab
 	end)
 	
-	-- Auto-open first tab
 	if #self.Tabs == 0 then
 		TabButton.TextColor3 = CONFIG.Colors.TabActive
 		TabContent.Visible = true
@@ -246,7 +234,6 @@ function Library:CreateTab(tabName)
 	return setmetatable(Tab, {__index = Library})
 end
 
--- Add Button Element
 function Library:AddButton(text, callback)
 	local ButtonFrame = Instance.new("Frame")
 	ButtonFrame.Name = "ButtonElement"
@@ -275,7 +262,6 @@ function Library:AddButton(text, callback)
 	ClickDetector.Text = ""
 	ClickDetector.Parent = ButtonFrame
 	
-	-- Hover Effect
 	ClickDetector.MouseEnter:Connect(function()
 		createTween(ButtonFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
 	end)
@@ -284,14 +270,10 @@ function Library:AddButton(text, callback)
 		createTween(ButtonFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
 	end)
 	
-	-- Click Handler
 	ClickDetector.MouseButton1Click:Connect(function()
-		-- Click animation
 		createTween(ButtonFrame, {Size = UDim2.new(1, -15, 0, 32)}, 0.1):Play()
 		wait(0.1)
 		createTween(ButtonFrame, {Size = UDim2.new(1, -10, 0, 34)}, 0.1):Play()
-		
-		-- Execute callback
 		pcall(callback)
 	end)
 	
@@ -299,7 +281,6 @@ function Library:AddButton(text, callback)
 	return ButtonFrame
 end
 
--- Add Toggle Element
 function Library:AddToggle(text, default, callback)
 	local toggled = default or false
 	
@@ -321,38 +302,87 @@ function Library:AddToggle(text, default, callback)
 	Label.Position = UDim2.new(0.0226, 0, 0, 0)
 	Label.Parent = ToggleFrame
 	
-	local ToggleButton = Instance.new("TextButton")
-	ToggleButton.Size = UDim2.new(0, 40, 0, 20)
-	ToggleButton.Position = UDim2.new(0.88, 0, 0.5, -10)
-	ToggleButton.BackgroundColor3 = toggled and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
-	ToggleButton.BorderSizePixel = 0
-	ToggleButton.Text = ""
-	ToggleButton.Parent = ToggleFrame
-	createStroke(ToggleButton, CONFIG.Colors.Stroke, 1)
+	local ToggleTrack = Instance.new("Frame")
+	ToggleTrack.Name = "ToggleTrack"
+	ToggleTrack.Size = UDim2.new(0, 44, 0, 22)
+	ToggleTrack.Position = UDim2.new(0.88, 0, 0.5, -11)
+	ToggleTrack.BackgroundColor3 = toggled and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
+	ToggleTrack.BorderSizePixel = 0
+	ToggleTrack.Parent = ToggleFrame
 	
-	-- Hover Effect
-	ToggleButton.MouseEnter:Connect(function()
+	local TrackCorner = Instance.new("UICorner")
+	TrackCorner.CornerRadius = UDim.new(0, 11)
+	TrackCorner.Parent = ToggleTrack
+	
+	createStroke(ToggleTrack, CONFIG.Colors.Stroke, 1)
+	
+	local ToggleThumb = Instance.new("Frame")
+	ToggleThumb.Name = "ToggleThumb"
+	ToggleThumb.Size = UDim2.new(0, 18, 0, 18)
+	ToggleThumb.Position = toggled and UDim2.new(0, 24, 0, 2) or UDim2.new(0, 2, 0, 2)
+	ToggleThumb.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ToggleThumb.BorderSizePixel = 0
+	ToggleThumb.Parent = ToggleTrack
+	
+	local ThumbCorner = Instance.new("UICorner")
+	ThumbCorner.CornerRadius = UDim.new(0, 9)
+	ThumbCorner.Parent = ToggleThumb
+	
+	local ClickDetector = Instance.new("TextButton")
+	ClickDetector.Name = "ClickDetector"
+	ClickDetector.BackgroundTransparency = 1
+	ClickDetector.Size = UDim2.new(1, 0, 1, 0)
+	ClickDetector.Text = ""
+	ClickDetector.Parent = ToggleFrame
+	
+	ClickDetector.MouseEnter:Connect(function()
 		createTween(ToggleFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+		createTween(ToggleThumb, {Size = UDim2.new(0, 20, 0, 20)}, 0.15):Play()
 	end)
 	
-	ToggleButton.MouseLeave:Connect(function()
+	ClickDetector.MouseLeave:Connect(function()
 		createTween(ToggleFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+		createTween(ToggleThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15):Play()
 	end)
 	
-	-- Toggle Handler
-	ToggleButton.MouseButton1Click:Connect(function()
+	ClickDetector.MouseButton1Click:Connect(function()
 		toggled = not toggled
-		createTween(ToggleButton, {
+		
+		createTween(ToggleTrack, {
 			BackgroundColor3 = toggled and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
-		}, 0.2):Play()
+		}, 0.25):Play()
+		
+		createTween(ToggleThumb, {
+			Position = toggled and UDim2.new(0, 24, 0, 2) or UDim2.new(0, 2, 0, 2)
+		}, 0.25):Play()
+		
+		local originalSize = UDim2.new(0, 18, 0, 18)
+		createTween(ToggleThumb, {Size = UDim2.new(0, 22, 0, 20)}, 0.1):Play()
+		wait(0.1)
+		createTween(ToggleThumb, {Size = originalSize}, 0.15):Play()
+		
 		pcall(callback, toggled)
 	end)
 	
 	table.insert(self.Elements, ToggleFrame)
-	return ToggleFrame
+	
+	return {
+		Frame = ToggleFrame,
+		SetValue = function(value)
+			toggled = value
+			createTween(ToggleTrack, {
+				BackgroundColor3 = toggled and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
+			}, 0.25):Play()
+			createTween(ToggleThumb, {
+				Position = toggled and UDim2.new(0, 24, 0, 2) or UDim2.new(0, 2, 0, 2)
+			}, 0.25):Play()
+		end,
+		GetValue = function()
+			return toggled
+		end
+	}
 end
 
--- Add Label Element
 function Library:AddLabel(text)
 	local LabelFrame = Instance.new("Frame")
 	LabelFrame.Size = UDim2.new(1, -10, 0, 25)
