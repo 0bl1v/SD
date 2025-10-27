@@ -81,30 +81,38 @@ function Library:CreateHub(hubName)
 	TitleLabel.TextSize = 16
 	TitleLabel.Parent = MainFrame
 	
-	-- Close Button
-	local CloseButton = Instance.new("TextButton")
+	local CloseButton = Instance.new("TextLabel")
 	CloseButton.Name = "CloseButton"
-	CloseButton.BackgroundColor3 = CONFIG.Colors.CloseButton
+	CloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	CloseButton.BackgroundTransparency = 1
+	CloseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CloseButton.BorderSizePixel = 0
-	CloseButton.Position = UDim2.new(0.95, -20, 0.027, 0)
-	CloseButton.Size = UDim2.new(0, 28, 0, 28)
+	CloseButton.Position = UDim2.new(0.941634238, 0, 0.0274390243, 0)
+	CloseButton.Size = UDim2.new(0, 20, 0, 20)
 	CloseButton.Font = Enum.Font.Code
-	CloseButton.Text = "X"
-	CloseButton.TextColor3 = CONFIG.Colors.Text
-	CloseButton.TextSize = 18
+	CloseButton.Text = "x"
+	CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	CloseButton.TextSize = 16
 	CloseButton.Parent = MainFrame
 	
-	-- Close Button Hover
-	CloseButton.MouseEnter:Connect(function()
-		createTween(CloseButton, {BackgroundColor3 = CONFIG.Colors.CloseButtonHover}, 0.2):Play()
+	local CloseDetector = Instance.new("TextButton")
+	CloseDetector.Name = "CloseDetector"
+	CloseDetector.BackgroundTransparency = 1
+	CloseDetector.Size = UDim2.new(1, 0, 1, 0)
+	CloseDetector.Text = ""
+	CloseDetector.Parent = CloseButton
+	
+	CloseDetector.MouseEnter:Connect(function()
+		createTween(CloseButton, {TextColor3 = Color3.fromRGB(200, 100, 100)}, 0.2):Play()
 	end)
 	
-	CloseButton.MouseLeave:Connect(function()
-		createTween(CloseButton, {BackgroundColor3 = CONFIG.Colors.CloseButton}, 0.2):Play()
+	CloseDetector.MouseLeave:Connect(function()
+		createTween(CloseButton, {TextColor3 = Color3.fromRGB(255, 255, 255)}, 0.2):Play()
 	end)
 	
-	-- Close Button Click
-	CloseButton.MouseButton1Click:Connect(function()
+	CloseDetector.MouseButton1Click:Connect(function()
+		createTween(MainFrame, {Size = UDim2.new(0, 0, 0, 0)}, 0.15):Play()
+		wait(0.15)
 		ScreenGui:Destroy()
 	end)
 	
