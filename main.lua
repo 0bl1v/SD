@@ -1,6 +1,6 @@
--- UI Library v1.1
+-- UI Library v1.2
 -- DarkLua Compatible - Obfuscated Version Ready
--- Modern Roblox UI Library
+-- Modern Roblox UI Library - No Corners, With Strokes
 
 local Library = {}
 Library.__index = Library
@@ -18,20 +18,24 @@ local CONFIG = {
 		ElementBg = Color3.fromRGB(0, 0, 0),
 		ElementBgHover = Color3.fromRGB(20, 20, 20),
 		Separator = Color3.fromRGB(67, 67, 67),
+		Stroke = Color3.fromRGB(31, 31, 31),
 		Text = Color3.fromRGB(255, 255, 255),
 		TabActive = Color3.fromRGB(100, 100, 255),
 		TabInactive = Color3.fromRGB(255, 255, 255),
 		ToggleOn = Color3.fromRGB(100, 200, 100),
-		ToggleOff = Color3.fromRGB(200, 100, 100)
+		ToggleOff = Color3.fromRGB(200, 100, 100),
+		CloseButton = Color3.fromRGB(200, 50, 50),
+		CloseButtonHover = Color3.fromRGB(255, 70, 70)
 	}
 }
 
 -- Utility Functions
-local function createCorner(parent, radius)
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, radius or 8)
-	corner.Parent = parent
-	return corner
+local function createStroke(parent, color, thickness)
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = color or CONFIG.Colors.Stroke
+	stroke.Thickness = thickness or 1
+	stroke.Parent = parent
+	return stroke
 end
 
 local function createTween(object, goal, duration)
@@ -64,7 +68,6 @@ function Library:CreateHub(hubName)
 	MainFrame.Size = UDim2.new(0, 514, 0, 328)
 	MainFrame.Parent = ScreenGui
 	MainFrame.ClipsDescendants = true
-	createCorner(MainFrame)
 	
 	-- Title
 	local TitleLabel = Instance.new("TextLabel")
@@ -77,6 +80,33 @@ function Library:CreateHub(hubName)
 	TitleLabel.TextColor3 = CONFIG.Colors.Text
 	TitleLabel.TextSize = 16
 	TitleLabel.Parent = MainFrame
+	
+	-- Close Button
+	local CloseButton = Instance.new("TextButton")
+	CloseButton.Name = "CloseButton"
+	CloseButton.BackgroundColor3 = CONFIG.Colors.CloseButton
+	CloseButton.BorderSizePixel = 0
+	CloseButton.Position = UDim2.new(0.95, -20, 0.027, 0)
+	CloseButton.Size = UDim2.new(0, 28, 0, 28)
+	CloseButton.Font = Enum.Font.Code
+	CloseButton.Text = "X"
+	CloseButton.TextColor3 = CONFIG.Colors.Text
+	CloseButton.TextSize = 18
+	CloseButton.Parent = MainFrame
+	
+	-- Close Button Hover
+	CloseButton.MouseEnter:Connect(function()
+		createTween(CloseButton, {BackgroundColor3 = CONFIG.Colors.CloseButtonHover}, 0.2):Play()
+	end)
+	
+	CloseButton.MouseLeave:Connect(function()
+		createTween(CloseButton, {BackgroundColor3 = CONFIG.Colors.CloseButton}, 0.2):Play()
+	end)
+	
+	-- Close Button Click
+	CloseButton.MouseButton1Click:Connect(function()
+		ScreenGui:Destroy()
+	end)
 	
 	-- Tab Container (Left side)
 	local TabContainer = Instance.new("Frame")
@@ -227,7 +257,7 @@ function Library:AddButton(text, callback)
 	ButtonFrame.BorderSizePixel = 0
 	ButtonFrame.Size = UDim2.new(1, -10, 0, 34)
 	ButtonFrame.Parent = self.Content
-	createCorner(ButtonFrame, 6)
+	createStroke(ButtonFrame, CONFIG.Colors.Stroke, 1)
 	
 	local ButtonLabel = Instance.new("TextLabel")
 	ButtonLabel.Name = "Label"
@@ -281,7 +311,7 @@ function Library:AddToggle(text, default, callback)
 	ToggleFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
 	ToggleFrame.BorderSizePixel = 0
 	ToggleFrame.Parent = self.Content
-	createCorner(ToggleFrame, 6)
+	createStroke(ToggleFrame, CONFIG.Colors.Stroke, 1)
 	
 	local Label = Instance.new("TextLabel")
 	Label.Size = UDim2.new(0.75, 0, 1, 0)
@@ -301,7 +331,7 @@ function Library:AddToggle(text, default, callback)
 	ToggleButton.BorderSizePixel = 0
 	ToggleButton.Text = ""
 	ToggleButton.Parent = ToggleFrame
-	createCorner(ToggleButton, 10)
+	createStroke(ToggleButton, CONFIG.Colors.Stroke, 1)
 	
 	-- Hover Effect
 	ToggleButton.MouseEnter:Connect(function()
