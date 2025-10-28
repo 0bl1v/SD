@@ -3,8 +3,9 @@ Library.__index = Library
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local THEMES = {
-	Dark = {
+local CONFIG = {
+	AnimationSpeed = 0.3,
+	Colors = {
 		Background = Color3.fromRGB(0, 0, 0),
 		ElementBg = Color3.fromRGB(0, 0, 0),
 		ElementBgHover = Color3.fromRGB(20, 20, 20),
@@ -17,69 +18,7 @@ local THEMES = {
 		ToggleOff = Color3.fromRGB(200, 100, 100),
 		CloseButton = Color3.fromRGB(200, 50, 50),
 		CloseButtonHover = Color3.fromRGB(255, 70, 70)
-	},
-	Blue = {
-		Background = Color3.fromRGB(15, 15, 25),
-		ElementBg = Color3.fromRGB(20, 20, 35),
-		ElementBgHover = Color3.fromRGB(30, 30, 50),
-		Separator = Color3.fromRGB(80, 80, 120),
-		Stroke = Color3.fromRGB(50, 50, 80),
-		Text = Color3.fromRGB(255, 255, 255),
-		TabActive = Color3.fromRGB(100, 150, 255),
-		TabInactive = Color3.fromRGB(200, 200, 255),
-		ToggleOn = Color3.fromRGB(100, 200, 255),
-		ToggleOff = Color3.fromRGB(200, 100, 100),
-		CloseButton = Color3.fromRGB(200, 50, 50),
-		CloseButtonHover = Color3.fromRGB(255, 70, 70)
-	},
-	Green = {
-		Background = Color3.fromRGB(10, 20, 10),
-		ElementBg = Color3.fromRGB(15, 30, 15),
-		ElementBgHover = Color3.fromRGB(25, 45, 25),
-		Separator = Color3.fromRGB(70, 120, 70),
-		Stroke = Color3.fromRGB(40, 70, 40),
-		Text = Color3.fromRGB(255, 255, 255),
-		TabActive = Color3.fromRGB(100, 255, 100),
-		TabInactive = Color3.fromRGB(200, 255, 200),
-		ToggleOn = Color3.fromRGB(100, 255, 100),
-		ToggleOff = Color3.fromRGB(200, 100, 100),
-		CloseButton = Color3.fromRGB(200, 50, 50),
-		CloseButtonHover = Color3.fromRGB(255, 70, 70)
-	},
-	Purple = {
-		Background = Color3.fromRGB(20, 10, 25),
-		ElementBg = Color3.fromRGB(30, 15, 40),
-		ElementBgHover = Color3.fromRGB(45, 25, 60),
-		Separator = Color3.fromRGB(120, 70, 150),
-		Stroke = Color3.fromRGB(70, 40, 90),
-		Text = Color3.fromRGB(255, 255, 255),
-		TabActive = Color3.fromRGB(200, 100, 255),
-		TabInactive = Color3.fromRGB(230, 200, 255),
-		ToggleOn = Color3.fromRGB(200, 100, 255),
-		ToggleOff = Color3.fromRGB(200, 100, 100),
-		CloseButton = Color3.fromRGB(200, 50, 50),
-		CloseButtonHover = Color3.fromRGB(255, 70, 70)
-	},
-	Red = {
-		Background = Color3.fromRGB(25, 10, 10),
-		ElementBg = Color3.fromRGB(40, 15, 15),
-		ElementBgHover = Color3.fromRGB(60, 25, 25),
-		Separator = Color3.fromRGB(150, 70, 70),
-		Stroke = Color3.fromRGB(90, 40, 40),
-		Text = Color3.fromRGB(255, 255, 255),
-		TabActive = Color3.fromRGB(255, 100, 100),
-		TabInactive = Color3.fromRGB(255, 200, 200),
-		ToggleOn = Color3.fromRGB(255, 100, 100),
-		ToggleOff = Color3.fromRGB(150, 150, 150),
-		CloseButton = Color3.fromRGB(200, 50, 50),
-		CloseButtonHover = Color3.fromRGB(255, 70, 70)
 	}
-}
-
-local CONFIG = {
-	AnimationSpeed = 0.3,
-	CurrentTheme = "Dark",
-	Colors = THEMES.Dark
 }
 
 local function createStroke(parent, color, thickness)
@@ -283,6 +222,71 @@ function Library:CreateHub(hubName)
 	Hub.MainFrame = MainFrame
 	Hub.TabContainer = TabContainer
 	Hub.ContentContainer = ContentContainer
+	
+	local ResizeHandle = Instance.new("Frame")
+	ResizeHandle.Name = "ResizeHandle"
+	ResizeHandle.Size = UDim2.new(0, 15, 0, 15)
+	ResizeHandle.Position = UDim2.new(1, -15, 1, -15)
+	ResizeHandle.BackgroundColor3 = CONFIG.Colors.Separator
+	ResizeHandle.BorderSizePixel = 0
+	ResizeHandle.Parent = MainFrame
+	
+	local resizing = false
+	local resizeStart, startSize
+	
+	ResizeHandle.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			resizing = true
+			resizeStart = input.Position
+			startSize = MainFrame.Size
+			
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					resizing = false
+				end
+			end)
+		end
+	end)
+	
+	UserInputService.InputChanged:Connect(function(input)
+		if resizing and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - resizeStart
+			local newWidth = math.max(400, startSize.X.Offset + delta.X)
+			local newHeight = math.max(250, startSize.Y.Offset + delta.Y)
+			MainFrame.Size = UDim2.new(0, newWidth, 0, newHeight)
+			
+			ContentContainer.Size = UDim2.new(0, newWidth - 115, 0, newHeight - 68)
+			LeftSeparator.Size = UDim2.new(0, 1, 0, newHeight - 37)
+			RightSeparator.Size = UDim2.new(0, 1, 0, newHeight - 37)
+			TabContainer.Size = UDim2.new(0, 75, 0, newHeight - 68)
+			ResizeHandle.Position = UDim2.new(1, -15, 1, -15)
+		end
+	end)
+	
+	function Hub:SetTheme(themeName)
+		if THEMES[themeName] then
+			CONFIG.Colors = THEMES[themeName]
+			CONFIG.CurrentTheme = themeName
+			
+			MainFrame.BackgroundColor3 = CONFIG.Colors.Background
+			
+			for _, tab in pairs(self.Tabs) do
+				for _, element in pairs(tab.Elements) do
+					if element:IsA("Frame") then
+						element.BackgroundColor3 = CONFIG.Colors.ElementBg
+						
+						for _, child in pairs(element:GetChildren()) do
+							if child:IsA("UIStroke") then
+								child.Color = CONFIG.Colors.Stroke
+							end
+						end
+					end
+				end
+			end
+			
+			Library:Notify("Theme", "Theme changed to " .. themeName, 2)
+		end
+	end
 	
 	return setmetatable(Hub, {__index = Library})
 end
