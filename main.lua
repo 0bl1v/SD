@@ -56,6 +56,7 @@ function Library:CreateHub(hubName)
 	MainFrame.Size = UDim2.new(0, 514, 0, 328)
 	MainFrame.Parent = ScreenGui
 	MainFrame.ClipsDescendants = true
+	createStroke(MainFrame, CONFIG.Colors.Stroke, 1)
 	
 	local TitleLabel = Instance.new("TextLabel")
 	TitleLabel.Name = "Title"
@@ -244,8 +245,8 @@ function Library:AddButton(text, callback)
 	local ButtonLabel = Instance.new("TextLabel")
 	ButtonLabel.Name = "Label"
 	ButtonLabel.BackgroundTransparency = 1
-	ButtonLabel.Position = UDim2.new(0.0226, 0, 0.0863, 0)
-	ButtonLabel.Size = UDim2.new(0, 382, 0, 28)
+	ButtonLabel.Position = UDim2.new(0.0226, 0, 0, 0)
+	ButtonLabel.Size = UDim2.new(1, -10, 1, 0)
 	ButtonLabel.Font = Enum.Font.Code
 	ButtonLabel.Text = text
 	ButtonLabel.TextColor3 = CONFIG.Colors.Text
@@ -290,7 +291,7 @@ function Library:AddToggle(text, default, callback)
 	createStroke(ToggleFrame, CONFIG.Colors.Stroke, 1)
 	
 	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.75, 0, 1, 0)
+	Label.Size = UDim2.new(0.7, 0, 1, 0)
 	Label.BackgroundTransparency = 1
 	Label.Font = Enum.Font.Code
 	Label.Text = text
@@ -326,7 +327,18 @@ function Library:AddToggle(text, default, callback)
 	end)
 	
 	table.insert(self.Elements, ToggleFrame)
-	return ToggleFrame
+	return {
+		Frame = ToggleFrame,
+		SetValue = function(value)
+			toggled = value
+			createTween(ToggleButton, {
+				BackgroundColor3 = toggled and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
+			}, 0.2):Play()
+		end,
+		GetValue = function()
+			return toggled
+		end
+	}
 end
 
 function Library:AddLabel(text)
@@ -361,7 +373,7 @@ function Library:AddSlider(text, min, max, default, callback)
 	createStroke(SliderFrame, CONFIG.Colors.Stroke, 1)
 	
 	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.7, 0, 0, 20)
+	Label.Size = UDim2.new(0.65, 0, 0, 20)
 	Label.Position = UDim2.new(0.0226, 0, 0, 5)
 	Label.BackgroundTransparency = 1
 	Label.Font = Enum.Font.Code
@@ -388,6 +400,7 @@ function Library:AddSlider(text, min, max, default, callback)
 	SliderBar.BackgroundColor3 = CONFIG.Colors.Separator
 	SliderBar.BorderSizePixel = 0
 	SliderBar.Parent = SliderFrame
+	createStroke(SliderBar, CONFIG.Colors.Stroke, 1)
 	
 	local SliderFill = Instance.new("Frame")
 	SliderFill.Size = UDim2.new((value - min) / (max - min), 0, 1, 0)
@@ -444,6 +457,140 @@ function Library:AddSlider(text, min, max, default, callback)
 		end,
 		GetValue = function()
 			return value
+		end
+	}
+end
+
+function Library:AddDropdown(text, options, default, callback)
+	local selected = default or options[1]
+	local isOpen = false
+	
+	local DropdownFrame = Instance.new("Frame")
+	DropdownFrame.Size = UDim2.new(1, -10, 0, 34)
+	DropdownFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	DropdownFrame.BorderSizePixel = 0
+	DropdownFrame.Parent = self.Content
+	DropdownFrame.ClipsDescendants = true
+	createStroke(DropdownFrame, CONFIG.Colors.Stroke, 1)
+	
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(0.5, 0, 0, 34)
+	Label.Position = UDim2.new(0.0226, 0, 0, 0)
+	Label.BackgroundTransparency = 1
+	Label.Font = Enum.Font.Code
+	Label.Text = text
+	Label.TextColor3 = CONFIG.Colors.Text
+	Label.TextSize = 14
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.Parent = DropdownFrame
+	
+	local SelectedLabel = Instance.new("TextLabel")
+	SelectedLabel.Size = UDim2.new(0.4, 0, 0, 34)
+	SelectedLabel.Position = UDim2.new(0.55, 0, 0, 0)
+	SelectedLabel.BackgroundTransparency = 1
+	SelectedLabel.Font = Enum.Font.Code
+	SelectedLabel.Text = selected
+	SelectedLabel.TextColor3 = CONFIG.Colors.TabActive
+	SelectedLabel.TextSize = 13
+	SelectedLabel.TextXAlignment = Enum.TextXAlignment.Right
+	SelectedLabel.Parent = DropdownFrame
+	
+	local Arrow = Instance.new("TextLabel")
+	Arrow.Size = UDim2.new(0, 20, 0, 34)
+	Arrow.Position = UDim2.new(1, -25, 0, 0)
+	Arrow.BackgroundTransparency = 1
+	Arrow.Font = Enum.Font.Code
+	Arrow.Text = "v"
+	Arrow.TextColor3 = CONFIG.Colors.Text
+	Arrow.TextSize = 14
+	Arrow.Parent = DropdownFrame
+	
+	local OptionsContainer = Instance.new("Frame")
+	OptionsContainer.Size = UDim2.new(1, 0, 0, 0)
+	OptionsContainer.Position = UDim2.new(0, 0, 0, 34)
+	OptionsContainer.BackgroundTransparency = 1
+	OptionsContainer.Parent = DropdownFrame
+	
+	local OptionsLayout = Instance.new("UIListLayout")
+	OptionsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	OptionsLayout.Parent = OptionsContainer
+	
+	local ClickDetector = Instance.new("TextButton")
+	ClickDetector.Size = UDim2.new(1, 0, 0, 34)
+	ClickDetector.BackgroundTransparency = 1
+	ClickDetector.Text = ""
+	ClickDetector.Parent = DropdownFrame
+	
+	ClickDetector.MouseEnter:Connect(function()
+		createTween(DropdownFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+	end)
+	
+	ClickDetector.MouseLeave:Connect(function()
+		if not isOpen then
+			createTween(DropdownFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+		end
+	end)
+	
+	for i, option in ipairs(options) do
+		local OptionButton = Instance.new("TextButton")
+		OptionButton.Size = UDim2.new(1, 0, 0, 28)
+		OptionButton.BackgroundColor3 = CONFIG.Colors.ElementBg
+		OptionButton.BorderSizePixel = 0
+		OptionButton.Font = Enum.Font.Code
+		OptionButton.Text = option
+		OptionButton.TextColor3 = CONFIG.Colors.Text
+		OptionButton.TextSize = 13
+		OptionButton.TextXAlignment = Enum.TextXAlignment.Left
+		OptionButton.Parent = OptionsContainer
+		createStroke(OptionButton, CONFIG.Colors.Stroke, 1)
+		
+		local Padding = Instance.new("UIPadding")
+		Padding.PaddingLeft = UDim.new(0.0226, 0)
+		Padding.Parent = OptionButton
+		
+		OptionButton.MouseEnter:Connect(function()
+			createTween(OptionButton, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+		end)
+		
+		OptionButton.MouseLeave:Connect(function()
+			createTween(OptionButton, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+		end)
+		
+		OptionButton.MouseButton1Click:Connect(function()
+			selected = option
+			SelectedLabel.Text = selected
+			isOpen = false
+			createTween(Arrow, {Rotation = 0}, 0.2):Play()
+			createTween(DropdownFrame, {Size = UDim2.new(1, -10, 0, 34)}, 0.3):Play()
+			createTween(DropdownFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+			pcall(callback, selected)
+		end)
+	end
+	
+	ClickDetector.MouseButton1Click:Connect(function()
+		isOpen = not isOpen
+		
+		if isOpen then
+			local targetHeight = 34 + (#options * 28)
+			createTween(Arrow, {Rotation = 180}, 0.2):Play()
+			createTween(DropdownFrame, {Size = UDim2.new(1, -10, 0, targetHeight)}, 0.3):Play()
+		else
+			createTween(Arrow, {Rotation = 0}, 0.2):Play()
+			createTween(DropdownFrame, {Size = UDim2.new(1, -10, 0, 34)}, 0.3):Play()
+			createTween(DropdownFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+		end
+	end)
+	
+	table.insert(self.Elements, DropdownFrame)
+	
+	return {
+		Frame = DropdownFrame,
+		SetValue = function(value)
+			selected = value
+			SelectedLabel.Text = selected
+		end,
+		GetValue = function()
+			return selected
 		end
 	}
 end
