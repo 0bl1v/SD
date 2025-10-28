@@ -69,6 +69,47 @@ function Library:CreateHub(hubName)
 	TitleLabel.TextSize = 16
 	TitleLabel.Parent = MainFrame
 	
+	local MinimizeButton = Instance.new("TextLabel")
+	MinimizeButton.Name = "MinimizeButton"
+	MinimizeButton.BackgroundTransparency = 1
+	MinimizeButton.Position = UDim2.new(0.88, 0, 0.0274390243, 0)
+	MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
+	MinimizeButton.Font = Enum.Font.Code
+	MinimizeButton.Text = "-"
+	MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	MinimizeButton.TextSize = 16
+	MinimizeButton.Parent = MainFrame
+	
+	local MinimizeDetector = Instance.new("TextButton")
+	MinimizeDetector.Name = "MinimizeDetector"
+	MinimizeDetector.BackgroundTransparency = 1
+	MinimizeDetector.Size = UDim2.new(1, 0, 1, 0)
+	MinimizeDetector.Text = ""
+	MinimizeDetector.Parent = MinimizeButton
+	
+	local isMinimized = false
+	local originalSize = MainFrame.Size
+	
+	MinimizeDetector.MouseEnter:Connect(function()
+		createTween(MinimizeButton, {TextColor3 = Color3.fromRGB(100, 200, 100)}, 0.2):Play()
+	end)
+	
+	MinimizeDetector.MouseLeave:Connect(function()
+		createTween(MinimizeButton, {TextColor3 = Color3.fromRGB(255, 255, 255)}, 0.2):Play()
+	end)
+	
+	MinimizeDetector.MouseButton1Click:Connect(function()
+		isMinimized = not isMinimized
+		
+		if isMinimized then
+			createTween(MainFrame, {Size = UDim2.new(0, 514, 0, 37)}, 0.3):Play()
+			MinimizeButton.Text = "+"
+		else
+			createTween(MainFrame, {Size = originalSize}, 0.3):Play()
+			MinimizeButton.Text = "-"
+		end
+	end)
+	
 	local CloseButton = Instance.new("TextLabel")
 	CloseButton.Name = "CloseButton"
 	CloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
