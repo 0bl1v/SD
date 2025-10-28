@@ -721,4 +721,200 @@ function Library:Notify(title, text, duration)
 	NotificationGui:Destroy()
 end
 
+function Library:AddKeybind(text, defaultKey, callback)
+	local currentKey = defaultKey or Enum.KeyCode.E
+	local waitingForKey = false
+	
+	local KeybindFrame = Instance.new("Frame")
+	KeybindFrame.Size = UDim2.new(1, -10, 0, 34)
+	KeybindFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	KeybindFrame.BorderSizePixel = 0
+	KeybindFrame.Parent = self.Content
+	createStroke(KeybindFrame, CONFIG.Colors.Stroke, 1)
+	
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(0.65, 0, 1, 0)
+	Label.Position = UDim2.new(0.0226, 0, 0, 0)
+	Label.BackgroundTransparency = 1
+	Label.Font = Enum.Font.Code
+	Label.Text = text
+	Label.TextColor3 = CONFIG.Colors.Text
+	Label.TextSize = 14
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.Parent = KeybindFrame
+	
+	local KeyButton = Instance.new("TextButton")
+	KeyButton.Size = UDim2.new(0, 60, 0, 24)
+	KeyButton.Position = UDim2.new(0.88, -40, 0.5, -12)
+	KeyButton.BackgroundColor3 = CONFIG.Colors.Separator
+	KeyButton.BorderSizePixel = 0
+	KeyButton.Font = Enum.Font.Code
+	KeyButton.Text = currentKey.Name
+	KeyButton.TextColor3 = CONFIG.Colors.Text
+	KeyButton.TextSize = 13
+	KeyButton.Parent = KeybindFrame
+	createStroke(KeyButton, CONFIG.Colors.Stroke, 1)
+	
+	KeyButton.MouseEnter:Connect(function()
+		createTween(KeybindFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+	end)
+	
+	KeyButton.MouseLeave:Connect(function()
+		createTween(KeybindFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+	end)
+	
+	KeyButton.MouseButton1Click:Connect(function()
+		waitingForKey = true
+		KeyButton.Text = "..."
+	end)
+	
+	UserInputService.InputBegan:Connect(function(input)
+		if waitingForKey and input.UserInputType == Enum.UserInputType.Keyboard then
+			currentKey = input.KeyCode
+			KeyButton.Text = currentKey.Name
+			waitingForKey = false
+		end
+		
+		if input.KeyCode == currentKey and not waitingForKey then
+			pcall(callback)
+		end
+	end)
+	
+	table.insert(self.Elements, KeybindFrame)
+	
+	return {
+		Frame = KeybindFrame,
+		SetKey = function(newKey)
+			currentKey = newKey
+			KeyButton.Text = currentKey.Name
+		end,
+		GetKey = function()
+			return currentKey
+		end
+	}
+end
+
+function Library:AddColorPicker(text, defaultColor, callback)
+	local selectedColor = defaultColor or Color3.fromRGB(255, 255, 255)
+	local isOpen = false
+	
+	local ColorFrame = Instance.new("Frame")
+	ColorFrame.Size = UDim2.new(1, -10, 0, 34)
+	ColorFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	ColorFrame.BorderSizePixel = 0
+	ColorFrame.Parent = self.Content
+	ColorFrame.ClipsDescendants = true
+	createStroke(ColorFrame, CONFIG.Colors.Stroke, 1)
+	
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(0.7, 0, 0, 34)
+	Label.Position = UDim2.new(0.0226, 0, 0, 0)
+	Label.BackgroundTransparency = 1
+	Label.Font = Enum.Font.Code
+	Label.Text = text
+	Label.TextColor3 = CONFIG.Colors.Text
+	Label.TextSize = 14
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.Parent = ColorFrame
+	
+	local ColorDisplay = Instance.new("Frame")
+	ColorDisplay.Size = UDim2.new(0, 40, 0, 20)
+	ColorDisplay.Position = UDim2.new(0.88, 0, 0.5, -10)
+	ColorDisplay.BackgroundColor3 = selectedColor
+	ColorDisplay.BorderSizePixel = 0
+	ColorDisplay.Parent = ColorFrame
+	createStroke(ColorDisplay, CONFIG.Colors.Stroke, 1)
+	
+	local ColorButton = Instance.new("TextButton")
+	ColorButton.Size = UDim2.new(1, 0, 0, 34)
+	ColorButton.BackgroundTransparency = 1
+	ColorButton.Text = ""
+	ColorButton.Parent = ColorFrame
+	
+	local ColorPicker = Instance.new("Frame")
+	ColorPicker.Size = UDim2.new(1, 0, 0, 120)
+	ColorPicker.Position = UDim2.new(0, 0, 0, 34)
+	ColorPicker.BackgroundColor3 = CONFIG.Colors.ElementBgHover
+	ColorPicker.BorderSizePixel = 0
+	ColorPicker.Parent = ColorFrame
+	
+	local ColorLayout = Instance.new("UIGridLayout")
+	ColorLayout.CellSize = UDim2.new(0, 30, 0, 30)
+	ColorLayout.CellPadding = UDim2.new(0, 5, 0, 5)
+	ColorLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	ColorLayout.Parent = ColorPicker
+	
+	local ColorPadding = Instance.new("UIPadding")
+	ColorPadding.PaddingLeft = UDim.new(0, 10)
+	ColorPadding.PaddingTop = UDim.new(0, 10)
+	ColorPadding.Parent = ColorPicker
+	
+	local colors = {
+		Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255),
+		Color3.fromRGB(255, 255, 0), Color3.fromRGB(255, 0, 255), Color3.fromRGB(0, 255, 255),
+		Color3.fromRGB(255, 128, 0), Color3.fromRGB(128, 0, 255), Color3.fromRGB(255, 255, 255),
+		Color3.fromRGB(0, 0, 0), Color3.fromRGB(128, 128, 128), Color3.fromRGB(100, 100, 255)
+	}
+	
+	for i, color in ipairs(colors) do
+		local ColorBox = Instance.new("TextButton")
+		ColorBox.Size = UDim2.new(0, 30, 0, 30)
+		ColorBox.BackgroundColor3 = color
+		ColorBox.BorderSizePixel = 0
+		ColorBox.Text = ""
+		ColorBox.Parent = ColorPicker
+		createStroke(ColorBox, CONFIG.Colors.Stroke, 1)
+		
+		ColorBox.MouseButton1Click:Connect(function()
+			selectedColor = color
+			ColorDisplay.BackgroundColor3 = selectedColor
+			isOpen = false
+			ColorFrame.Size = UDim2.new(1, -10, 0, 34)
+			pcall(callback, selectedColor)
+		end)
+		
+		ColorBox.MouseEnter:Connect(function()
+			createTween(ColorBox, {Size = UDim2.new(0, 35, 0, 35)}, 0.1):Play()
+		end)
+		
+		ColorBox.MouseLeave:Connect(function()
+			createTween(ColorBox, {Size = UDim2.new(0, 30, 0, 30)}, 0.1):Play()
+		end)
+	end
+	
+	ColorButton.MouseEnter:Connect(function()
+		createTween(ColorFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+	end)
+	
+	ColorButton.MouseLeave:Connect(function()
+		if not isOpen then
+			createTween(ColorFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+		end
+	end)
+	
+	ColorButton.MouseButton1Click:Connect(function()
+		isOpen = not isOpen
+		
+		if isOpen then
+			ColorFrame.Size = UDim2.new(1, -10, 0, 154)
+		else
+			ColorFrame.Size = UDim2.new(1, -10, 0, 34)
+			createTween(ColorFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+		end
+	end)
+	
+	table.insert(self.Elements, ColorFrame)
+	
+	return {
+		Frame = ColorFrame,
+		SetColor = function(color)
+			selectedColor = color
+			ColorDisplay.BackgroundColor3 = selectedColor
+		end,
+		GetColor = function()
+			return selectedColor
+		end
+	}
+end
+
 return Library
