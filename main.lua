@@ -1,7 +1,3 @@
-local ToggleButton = Instance.new("Frame")
-	ToggleButton.Size = UDim2.new(0, 44, 0, 22)
-	ToggleButton.Position = UDim2.new(0.88, 0, 0.5, -11)
-	ToggleButton.BackgroundColor3 = toggled and CONFIG.Colors.ToggleOn or CONFIG.Colors.local Library = {}
 Library.__index = Library
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
