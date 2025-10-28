@@ -350,4 +350,102 @@ function Library:AddLabel(text)
 	return LabelFrame
 end
 
+function Library:AddSlider(text, min, max, default, callback)
+	local value = default or min
+	
+	local SliderFrame = Instance.new("Frame")
+	SliderFrame.Size = UDim2.new(1, -10, 0, 50)
+	SliderFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	SliderFrame.BorderSizePixel = 0
+	SliderFrame.Parent = self.Content
+	createStroke(SliderFrame, CONFIG.Colors.Stroke, 1)
+	
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(0.7, 0, 0, 20)
+	Label.Position = UDim2.new(0.0226, 0, 0, 5)
+	Label.BackgroundTransparency = 1
+	Label.Font = Enum.Font.Code
+	Label.Text = text
+	Label.TextColor3 = CONFIG.Colors.Text
+	Label.TextSize = 14
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.Parent = SliderFrame
+	
+	local ValueLabel = Instance.new("TextLabel")
+	ValueLabel.Size = UDim2.new(0, 50, 0, 20)
+	ValueLabel.Position = UDim2.new(0.88, 0, 0, 5)
+	ValueLabel.BackgroundTransparency = 1
+	ValueLabel.Font = Enum.Font.Code
+	ValueLabel.Text = tostring(value)
+	ValueLabel.TextColor3 = CONFIG.Colors.Text
+	ValueLabel.TextSize = 14
+	ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
+	ValueLabel.Parent = SliderFrame
+	
+	local SliderBar = Instance.new("Frame")
+	SliderBar.Size = UDim2.new(1, -20, 0, 6)
+	SliderBar.Position = UDim2.new(0.0226, 0, 1, -15)
+	SliderBar.BackgroundColor3 = CONFIG.Colors.Separator
+	SliderBar.BorderSizePixel = 0
+	SliderBar.Parent = SliderFrame
+	
+	local SliderFill = Instance.new("Frame")
+	SliderFill.Size = UDim2.new((value - min) / (max - min), 0, 1, 0)
+	SliderFill.BackgroundColor3 = CONFIG.Colors.TabActive
+	SliderFill.BorderSizePixel = 0
+	SliderFill.Parent = SliderBar
+	
+	local SliderButton = Instance.new("TextButton")
+	SliderButton.Size = UDim2.new(1, 0, 1, 0)
+	SliderButton.BackgroundTransparency = 1
+	SliderButton.Text = ""
+	SliderButton.Parent = SliderBar
+	
+	local dragging = false
+	
+	SliderButton.MouseButton1Down:Connect(function()
+		dragging = true
+	end)
+	
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+	
+	SliderButton.MouseMoved:Connect(function(x)
+		if dragging then
+			local percentage = math.clamp((x - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X, 0, 1)
+			value = math.floor(min + (max - min) * percentage)
+			
+			createTween(SliderFill, {Size = UDim2.new(percentage, 0, 1, 0)}, 0.1):Play()
+			ValueLabel.Text = tostring(value)
+			pcall(callback, value)
+		end
+	end)
+	
+	SliderFrame.MouseEnter:Connect(function()
+		createTween(SliderFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+	end)
+	
+	SliderFrame.MouseLeave:Connect(function()
+		createTween(SliderFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+	end)
+	
+	table.insert(self.Elements, SliderFrame)
+	
+	return {
+		Frame = SliderFrame,
+		SetValue = function(newValue)
+			value = math.clamp(newValue, min, max)
+			local percentage = (value - min) / (max - min)
+			createTween(SliderFill, {Size = UDim2.new(percentage, 0, 1, 0)}, 0.2):Play()
+			ValueLabel.Text = tostring(value)
+		end,
+		GetValue = function()
+			return value
+		end
+	}
+end
+
 return Library
