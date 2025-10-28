@@ -72,6 +72,13 @@ function Library:CreateHub(hubName)
 	TitleLabel.TextSize = 16
 	TitleLabel.Parent = MainFrame
 	
+	local TopBar = Instance.new("Frame")
+	TopBar.Name = "TopBar"
+	TopBar.BackgroundTransparency = 1
+	TopBar.Position = UDim2.new(0, 0, 0, 0)
+	TopBar.Size = UDim2.new(1, 0, 0, 37)
+	TopBar.Parent = MainFrame
+	
 	local CloseButton = Instance.new("TextLabel")
 	CloseButton.Name = "CloseButton"
 	CloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
