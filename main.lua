@@ -644,4 +644,81 @@ function Library:AddDropdown(text, options, default, callback)
 	}
 end
 
+function Library:AddSection(text)
+	local SectionFrame = Instance.new("Frame")
+	SectionFrame.Size = UDim2.new(1, -10, 0, 30)
+	SectionFrame.BackgroundTransparency = 1
+	SectionFrame.Parent = self.Content
+	
+	local SectionLabel = Instance.new("TextLabel")
+	SectionLabel.Size = UDim2.new(1, 0, 0, 20)
+	SectionLabel.BackgroundTransparency = 1
+	SectionLabel.Font = Enum.Font.Code
+	SectionLabel.Text = text
+	SectionLabel.TextColor3 = CONFIG.Colors.TabActive
+	SectionLabel.TextSize = 15
+	SectionLabel.TextXAlignment = Enum.TextXAlignment.Left
+	SectionLabel.Parent = SectionFrame
+	
+	local SectionLine = Instance.new("Frame")
+	SectionLine.Size = UDim2.new(1, 0, 0, 1)
+	SectionLine.Position = UDim2.new(0, 0, 1, -5)
+	SectionLine.BackgroundColor3 = CONFIG.Colors.Separator
+	SectionLine.BorderSizePixel = 0
+	SectionLine.Parent = SectionFrame
+	
+	table.insert(self.Elements, SectionFrame)
+	return SectionFrame
+end
+
+function Library:Notify(title, text, duration)
+	duration = duration or 3
+	
+	local NotificationGui = Instance.new("ScreenGui")
+	NotificationGui.Name = "Notification"
+	NotificationGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	NotificationGui.ResetOnSpawn = false
+	NotificationGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	
+	local NotificationFrame = Instance.new("Frame")
+	NotificationFrame.Size = UDim2.new(0, 300, 0, 80)
+	NotificationFrame.Position = UDim2.new(1, -320, 0, 20)
+	NotificationFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	NotificationFrame.BorderSizePixel = 0
+	NotificationFrame.Parent = NotificationGui
+	createStroke(NotificationFrame, CONFIG.Colors.Stroke, 1)
+	
+	local TitleLabel = Instance.new("TextLabel")
+	TitleLabel.Size = UDim2.new(1, -20, 0, 25)
+	TitleLabel.Position = UDim2.new(0, 10, 0, 5)
+	TitleLabel.BackgroundTransparency = 1
+	TitleLabel.Font = Enum.Font.Code
+	TitleLabel.Text = title
+	TitleLabel.TextColor3 = CONFIG.Colors.TabActive
+	TitleLabel.TextSize = 15
+	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TitleLabel.Parent = NotificationFrame
+	
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.Size = UDim2.new(1, -20, 0, 40)
+	TextLabel.Position = UDim2.new(0, 10, 0, 30)
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.Font = Enum.Font.Code
+	TextLabel.Text = text
+	TextLabel.TextColor3 = CONFIG.Colors.Text
+	TextLabel.TextSize = 13
+	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TextLabel.TextWrapped = true
+	TextLabel.Parent = NotificationFrame
+	
+	NotificationFrame.Position = UDim2.new(1, 0, 0, 20)
+	createTween(NotificationFrame, {Position = UDim2.new(1, -320, 0, 20)}, 0.5):Play()
+	
+	wait(duration)
+	
+	createTween(NotificationFrame, {Position = UDim2.new(1, 0, 0, 20)}, 0.5):Play()
+	wait(0.5)
+	NotificationGui:Destroy()
+end
+
 return Library
