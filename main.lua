@@ -3,9 +3,8 @@ Library.__index = Library
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local CONFIG = {
-	AnimationSpeed = 0.3,
-	Colors = {
+local THEMES = {
+	Dark = {
 		Background = Color3.fromRGB(0, 0, 0),
 		ElementBg = Color3.fromRGB(0, 0, 0),
 		ElementBgHover = Color3.fromRGB(20, 20, 20),
@@ -18,7 +17,69 @@ local CONFIG = {
 		ToggleOff = Color3.fromRGB(200, 100, 100),
 		CloseButton = Color3.fromRGB(200, 50, 50),
 		CloseButtonHover = Color3.fromRGB(255, 70, 70)
+	},
+	Blue = {
+		Background = Color3.fromRGB(15, 15, 25),
+		ElementBg = Color3.fromRGB(20, 20, 35),
+		ElementBgHover = Color3.fromRGB(30, 30, 50),
+		Separator = Color3.fromRGB(80, 80, 120),
+		Stroke = Color3.fromRGB(50, 50, 80),
+		Text = Color3.fromRGB(255, 255, 255),
+		TabActive = Color3.fromRGB(100, 150, 255),
+		TabInactive = Color3.fromRGB(200, 200, 255),
+		ToggleOn = Color3.fromRGB(100, 200, 255),
+		ToggleOff = Color3.fromRGB(200, 100, 100),
+		CloseButton = Color3.fromRGB(200, 50, 50),
+		CloseButtonHover = Color3.fromRGB(255, 70, 70)
+	},
+	Green = {
+		Background = Color3.fromRGB(10, 20, 10),
+		ElementBg = Color3.fromRGB(15, 30, 15),
+		ElementBgHover = Color3.fromRGB(25, 45, 25),
+		Separator = Color3.fromRGB(70, 120, 70),
+		Stroke = Color3.fromRGB(40, 70, 40),
+		Text = Color3.fromRGB(255, 255, 255),
+		TabActive = Color3.fromRGB(100, 255, 100),
+		TabInactive = Color3.fromRGB(200, 255, 200),
+		ToggleOn = Color3.fromRGB(100, 255, 100),
+		ToggleOff = Color3.fromRGB(200, 100, 100),
+		CloseButton = Color3.fromRGB(200, 50, 50),
+		CloseButtonHover = Color3.fromRGB(255, 70, 70)
+	},
+	Purple = {
+		Background = Color3.fromRGB(20, 10, 25),
+		ElementBg = Color3.fromRGB(30, 15, 40),
+		ElementBgHover = Color3.fromRGB(45, 25, 60),
+		Separator = Color3.fromRGB(120, 70, 150),
+		Stroke = Color3.fromRGB(70, 40, 90),
+		Text = Color3.fromRGB(255, 255, 255),
+		TabActive = Color3.fromRGB(200, 100, 255),
+		TabInactive = Color3.fromRGB(230, 200, 255),
+		ToggleOn = Color3.fromRGB(200, 100, 255),
+		ToggleOff = Color3.fromRGB(200, 100, 100),
+		CloseButton = Color3.fromRGB(200, 50, 50),
+		CloseButtonHover = Color3.fromRGB(255, 70, 70)
+	},
+	Red = {
+		Background = Color3.fromRGB(25, 10, 10),
+		ElementBg = Color3.fromRGB(40, 15, 15),
+		ElementBgHover = Color3.fromRGB(60, 25, 25),
+		Separator = Color3.fromRGB(150, 70, 70),
+		Stroke = Color3.fromRGB(90, 40, 40),
+		Text = Color3.fromRGB(255, 255, 255),
+		TabActive = Color3.fromRGB(255, 100, 100),
+		TabInactive = Color3.fromRGB(255, 200, 200),
+		ToggleOn = Color3.fromRGB(255, 100, 100),
+		ToggleOff = Color3.fromRGB(150, 150, 150),
+		CloseButton = Color3.fromRGB(200, 50, 50),
+		CloseButtonHover = Color3.fromRGB(255, 70, 70)
 	}
+}
+
+local CONFIG = {
+	AnimationSpeed = 0.3,
+	CurrentTheme = "Dark",
+	Colors = THEMES.Dark
 }
 
 local function createStroke(parent, color, thickness)
@@ -802,7 +863,7 @@ function Library:AddColorPicker(text, defaultColor, callback)
 	ColorFrame.Size = UDim2.new(1, -10, 0, 34)
 	ColorFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
 	ColorFrame.BorderSizePixel = 0
-	ColorFrame.Parent = self.Content
+	ColorFrame.Parent = self.Content or self.ContentContainer
 	ColorFrame.ClipsDescendants = true
 	createStroke(ColorFrame, CONFIG.Colors.Stroke, 1)
 	
