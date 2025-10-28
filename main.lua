@@ -144,19 +144,9 @@ function Library:CreateHub(hubName)
 	ContentContainer.Size = UDim2.new(1, -161, 1, -60)
 	ContentContainer.Parent = MainFrame
 	
-	-- Dragging functionality - fixed to only work on TopBar
 	local dragging, dragInput, dragStart, startPos
 	
-	-- Create an invisible drag area that doesn't interfere with children
-	local DragArea = Instance.new("Frame")
-	DragArea.Name = "DragArea"
-	DragArea.BackgroundTransparency = 1
-	DragArea.Size = UDim2.new(1, -50, 1, 0)  -- Exclude close button area
-	DragArea.Position = UDim2.new(0, 0, 0, 0)
-	DragArea.ZIndex = 1
-	DragArea.Parent = TopBar
-	
-	DragArea.InputBegan:Connect(function(input)
+	TopBar.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			dragging = true
 			dragStart = input.Position
