@@ -729,7 +729,7 @@ function Library:AddKeybind(text, defaultKey, callback)
 	KeybindFrame.Size = UDim2.new(1, -10, 0, 34)
 	KeybindFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
 	KeybindFrame.BorderSizePixel = 0
-	KeybindFrame.Parent = self.Content
+	KeybindFrame.Parent = self.Content or self.ContentContainer
 	createStroke(KeybindFrame, CONFIG.Colors.Stroke, 1)
 	
 	local Label = Instance.new("TextLabel")
