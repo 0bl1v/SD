@@ -1,3 +1,4 @@
+local Library = {}
 Library.__index = Library
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
