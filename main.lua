@@ -102,11 +102,19 @@ function Library:CreateHub(hubName)
 		isMinimized = not isMinimized
 		
 		if isMinimized then
-			createTween(MainFrame, {Size = UDim2.new(0, 514, 0, 37)}, 0.3):Play()
+			MainFrame.Size = UDim2.new(0, 514, 0, 37)
 			MinimizeButton.Text = "+"
+			TabContainer.Visible = false
+			LeftSeparator.Visible = false
+			RightSeparator.Visible = false
+			ContentContainer.Visible = false
 		else
-			createTween(MainFrame, {Size = originalSize}, 0.3):Play()
+			MainFrame.Size = originalSize
 			MinimizeButton.Text = "-"
+			TabContainer.Visible = true
+			LeftSeparator.Visible = true
+			RightSeparator.Visible = true
+			ContentContainer.Visible = true
 		end
 	end)
 	
