@@ -917,4 +917,184 @@ function Library:AddColorPicker(text, defaultColor, callback)
 	}
 end
 
+function Library:AddCheckbox(text, default, callback)
+	local checked = default or false
+	
+	local CheckboxFrame = Instance.new("Frame")
+	CheckboxFrame.Size = UDim2.new(1, -10, 0, 34)
+	CheckboxFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	CheckboxFrame.BorderSizePixel = 0
+	CheckboxFrame.Parent = self.Content or self.ContentContainer
+	createStroke(CheckboxFrame, CONFIG.Colors.Stroke, 1)
+	
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(0.75, 0, 1, 0)
+	Label.BackgroundTransparency = 1
+	Label.Font = Enum.Font.Code
+	Label.Text = text
+	Label.TextColor3 = CONFIG.Colors.Text
+	Label.TextSize = 14
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.Position = UDim2.new(0.0226, 0, 0, 0)
+	Label.Parent = CheckboxFrame
+	
+	local CheckboxBox = Instance.new("Frame")
+	CheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+	CheckboxBox.Position = UDim2.new(0.88, 0, 0.5, -10)
+	CheckboxBox.BackgroundColor3 = CONFIG.Colors.ElementBg
+	CheckboxBox.BorderSizePixel = 0
+	CheckboxBox.Parent = CheckboxFrame
+	createStroke(CheckboxBox, CONFIG.Colors.Stroke, 1)
+	
+	local CheckMark = Instance.new("TextLabel")
+	CheckMark.Size = UDim2.new(1, 0, 1, 0)
+	CheckMark.BackgroundTransparency = 1
+	CheckMark.Font = Enum.Font.Code
+	CheckMark.Text = checked and "✓" or ""
+	CheckMark.TextColor3 = CONFIG.Colors.ToggleOn
+	CheckMark.TextSize = 18
+	CheckMark.Parent = CheckboxBox
+	
+	local ClickDetector = Instance.new("TextButton")
+	ClickDetector.Size = UDim2.new(1, 0, 1, 0)
+	ClickDetector.BackgroundTransparency = 1
+	ClickDetector.Text = ""
+	ClickDetector.Parent = CheckboxFrame
+	
+	ClickDetector.MouseEnter:Connect(function()
+		createTween(CheckboxFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+	end)
+	
+	ClickDetector.MouseLeave:Connect(function()
+		createTween(CheckboxFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+	end)
+	
+	ClickDetector.MouseButton1Click:Connect(function()
+		checked = not checked
+		CheckMark.Text = checked and "✓" or ""
+		createTween(CheckMark, {TextColor3 = checked and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff}, 0.2):Play()
+		pcall(callback, checked)
+	end)
+	
+	table.insert(self.Elements, CheckboxFrame)
+	
+	return {
+		Frame = CheckboxFrame,
+		SetValue = function(value)
+			checked = value
+			CheckMark.Text = checked and "✓" or ""
+			CheckMark.TextColor3 = checked and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
+		end,
+		GetValue = function()
+			return checked
+		end
+	}
+end
+
+function Library:AddRadioButtons(text, options, default, callback)
+	local selected = default or options[1]
+	
+	local RadioFrame = Instance.new("Frame")
+	RadioFrame.Size = UDim2.new(1, -10, 0, 34 + (#options * 30))
+	RadioFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	RadioFrame.BorderSizePixel = 0
+	RadioFrame.Parent = self.Content or self.ContentContainer
+	createStroke(RadioFrame, CONFIG.Colors.Stroke, 1)
+	
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(1, -10, 0, 28)
+	Label.Position = UDim2.new(0.0226, 0, 0, 3)
+	Label.BackgroundTransparency = 1
+	Label.Font = Enum.Font.Code
+	Label.Text = text
+	Label.TextColor3 = CONFIG.Colors.Text
+	Label.TextSize = 14
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.Parent = RadioFrame
+	
+	local OptionsContainer = Instance.new("Frame")
+	OptionsContainer.Size = UDim2.new(1, 0, 0, #options * 30)
+	OptionsContainer.Position = UDim2.new(0, 0, 0, 34)
+	OptionsContainer.BackgroundTransparency = 1
+	OptionsContainer.Parent = RadioFrame
+	
+	local radioButtons = {}
+	
+	for i, option in ipairs(options) do
+		local OptionFrame = Instance.new("Frame")
+		OptionFrame.Size = UDim2.new(1, 0, 0, 28)
+		OptionFrame.Position = UDim2.new(0, 0, 0, (i - 1) * 30)
+		OptionFrame.BackgroundTransparency = 1
+		OptionFrame.Parent = OptionsContainer
+		
+		local RadioCircle = Instance.new("Frame")
+		RadioCircle.Size = UDim2.new(0, 18, 0, 18)
+		RadioCircle.Position = UDim2.new(0.05, 0, 0.5, -9)
+		RadioCircle.BackgroundColor3 = CONFIG.Colors.ElementBg
+		RadioCircle.BorderSizePixel = 0
+		RadioCircle.Parent = OptionFrame
+		createStroke(RadioCircle, CONFIG.Colors.Stroke, 1)
+		
+		local RadioDot = Instance.new("Frame")
+		RadioDot.Size = UDim2.new(0, 10, 0, 10)
+		RadioDot.Position = UDim2.new(0.5, -5, 0.5, -5)
+		RadioDot.BackgroundColor3 = option == selected and CONFIG.Colors.ToggleOn or CONFIG.Colors.ElementBg
+		RadioDot.BorderSizePixel = 0
+		RadioDot.Parent = RadioCircle
+		
+		local OptionLabel = Instance.new("TextLabel")
+		OptionLabel.Size = UDim2.new(0.8, 0, 1, 0)
+		OptionLabel.Position = UDim2.new(0.15, 0, 0, 0)
+		OptionLabel.BackgroundTransparency = 1
+		OptionLabel.Font = Enum.Font.Code
+		OptionLabel.Text = option
+		OptionLabel.TextColor3 = CONFIG.Colors.Text
+		OptionLabel.TextSize = 13
+		OptionLabel.TextXAlignment = Enum.TextXAlignment.Left
+		OptionLabel.Parent = OptionFrame
+		
+		local OptionButton = Instance.new("TextButton")
+		OptionButton.Size = UDim2.new(1, 0, 1, 0)
+		OptionButton.BackgroundTransparency = 1
+		OptionButton.Text = ""
+		OptionButton.Parent = OptionFrame
+		
+		OptionButton.MouseEnter:Connect(function()
+			createTween(OptionFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+		end)
+		
+		OptionButton.MouseLeave:Connect(function()
+			createTween(OptionFrame, {BackgroundTransparency = 1}, 0.2):Play()
+		end)
+		
+		OptionButton.MouseButton1Click:Connect(function()
+			selected = option
+			
+			for _, btn in pairs(radioButtons) do
+				createTween(btn.Dot, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+			end
+			
+			createTween(RadioDot, {BackgroundColor3 = CONFIG.Colors.ToggleOn}, 0.2):Play()
+			pcall(callback, selected)
+		end)
+		
+		table.insert(radioButtons, {Dot = RadioDot, Option = option})
+	end
+	
+	table.insert(self.Elements, RadioFrame)
+	
+	return {
+		Frame = RadioFrame,
+		SetValue = function(value)
+			selected = value
+			for _, btn in pairs(radioButtons) do
+				btn.Dot.BackgroundColor3 = btn.Option == selected and CONFIG.Colors.ToggleOn or CONFIG.Colors.ElementBg
+			end
+		end,
+		GetValue = function()
+			return selected
+		end
+	}
+end
+
 return Library
