@@ -1,5 +1,3 @@
-# su - sandui documentation
-
 ## load library
 ```lua
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/0bl1v/SD/refs/heads/main/main.lua"))()
@@ -15,17 +13,21 @@ local combattab = hub:CreateTab("combat")
 local visualtab = hub:CreateTab("visual")
 local misctab = hub:CreateTab("misc")
 ```
+```lua
 add section
-lua
+```
+```lua
 maintab:AddSection("player controls")
+```
 add button
-lua
+```lua
 maintab:AddButton("button example", function()
     print("button clicked!")
     library:Notify("success", "button was clicked!", 2)
 end)
+```
 add toggle
-lua
+```lua
 local toggle1 = maintab:AddToggle("toggle example", false, function(state)
     print("toggle state:", state)
     if state then
@@ -34,14 +36,17 @@ local toggle1 = maintab:AddToggle("toggle example", false, function(state)
         library:Notify("disabled", "feature disabled!", 2)
     end
 end)
+```
 add slider
-lua
+```lua
 local slider1 = maintab:AddSlider("slider example", 0, 100, 50, function(value)
     print("slider value:", value)
 end)
+```
 add label
-lua
+```lua
 maintab:AddLabel("this is a label example")
+```
 add dropdown
 lua
 local dropdown1 = maintab:AddDropdown("dropdown example", {"option1", "option2", "option3", "option4"}, "option1", function(value)
