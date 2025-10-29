@@ -393,12 +393,13 @@ end
 
 function Library:AddLabel(text)
 	local LabelFrame = Instance.new("Frame")
-	LabelFrame.Size = UDim2.new(1, -10, 0, 25)
+	LabelFrame.Size = UDim2.new(1, -5, 0, 25)
 	LabelFrame.BackgroundTransparency = 1
 	LabelFrame.Parent = self.Content
 	
 	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(1, 0, 1, 0)
+	Label.Size = UDim2.new(1, -10, 1, 0)
+	Label.Position = UDim2.new(0, 5, 0, 0)
 	Label.BackgroundTransparency = 1
 	Label.Font = Enum.Font.Code
 	Label.Text = text
@@ -416,15 +417,15 @@ function Library:AddSlider(text, min, max, default, callback)
 	local value = default or min
 	
 	local SliderFrame = Instance.new("Frame")
-	SliderFrame.Size = UDim2.new(1, -10, 0, 50)
+	SliderFrame.Size = UDim2.new(1, -5, 0, 52)
 	SliderFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
 	SliderFrame.BorderSizePixel = 0
 	SliderFrame.Parent = self.Content
 	createStroke(SliderFrame, CONFIG.Colors.Stroke, 1)
 	
 	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.65, 0, 0, 20)
-	Label.Position = UDim2.new(0.0226, 0, 0, 5)
+	Label.Size = UDim2.new(1, -70, 0, 22)
+	Label.Position = UDim2.new(0, 10, 0, 5)
 	Label.BackgroundTransparency = 1
 	Label.Font = Enum.Font.Code
 	Label.Text = text
@@ -434,8 +435,8 @@ function Library:AddSlider(text, min, max, default, callback)
 	Label.Parent = SliderFrame
 	
 	local ValueLabel = Instance.new("TextLabel")
-	ValueLabel.Size = UDim2.new(0, 50, 0, 20)
-	ValueLabel.Position = UDim2.new(0.88, 0, 0, 5)
+	ValueLabel.Size = UDim2.new(0, 50, 0, 22)
+	ValueLabel.Position = UDim2.new(1, -60, 0, 5)
 	ValueLabel.BackgroundTransparency = 1
 	ValueLabel.Font = Enum.Font.Code
 	ValueLabel.Text = tostring(value)
@@ -446,7 +447,7 @@ function Library:AddSlider(text, min, max, default, callback)
 	
 	local SliderBar = Instance.new("Frame")
 	SliderBar.Size = UDim2.new(1, -20, 0, 6)
-	SliderBar.Position = UDim2.new(0.0226, 0, 1, -15)
+	SliderBar.Position = UDim2.new(0, 10, 1, -16)
 	SliderBar.BackgroundColor3 = CONFIG.Colors.Separator
 	SliderBar.BorderSizePixel = 0
 	SliderBar.Parent = SliderFrame
@@ -516,7 +517,7 @@ function Library:AddDropdown(text, options, default, callback)
 	local isOpen = false
 	
 	local DropdownFrame = Instance.new("Frame")
-	DropdownFrame.Size = UDim2.new(1, -10, 0, 34)
+	DropdownFrame.Size = UDim2.new(1, -5, 0, 36)
 	DropdownFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
 	DropdownFrame.BorderSizePixel = 0
 	DropdownFrame.Parent = self.Content
@@ -524,8 +525,8 @@ function Library:AddDropdown(text, options, default, callback)
 	createStroke(DropdownFrame, CONFIG.Colors.Stroke, 1)
 	
 	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.5, 0, 0, 34)
-	Label.Position = UDim2.new(0.0226, 0, 0, 0)
+	Label.Size = UDim2.new(0.45, 0, 0, 36)
+	Label.Position = UDim2.new(0, 10, 0, 0)
 	Label.BackgroundTransparency = 1
 	Label.Font = Enum.Font.Code
 	Label.Text = text
@@ -535,8 +536,8 @@ function Library:AddDropdown(text, options, default, callback)
 	Label.Parent = DropdownFrame
 	
 	local SelectedLabel = Instance.new("TextLabel")
-	SelectedLabel.Size = UDim2.new(0.4, 0, 0, 34)
-	SelectedLabel.Position = UDim2.new(0.55, 0, 0, 0)
+	SelectedLabel.Size = UDim2.new(0.45, 0, 0, 36)
+	SelectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
 	SelectedLabel.BackgroundTransparency = 1
 	SelectedLabel.Font = Enum.Font.Code
 	SelectedLabel.Text = selected
@@ -546,7 +547,7 @@ function Library:AddDropdown(text, options, default, callback)
 	SelectedLabel.Parent = DropdownFrame
 	
 	local Arrow = Instance.new("TextLabel")
-	Arrow.Size = UDim2.new(0, 20, 0, 34)
+	Arrow.Size = UDim2.new(0, 20, 0, 36)
 	Arrow.Position = UDim2.new(1, -25, 0, 0)
 	Arrow.BackgroundTransparency = 1
 	Arrow.Font = Enum.Font.Code
@@ -557,7 +558,7 @@ function Library:AddDropdown(text, options, default, callback)
 	
 	local OptionsContainer = Instance.new("Frame")
 	OptionsContainer.Size = UDim2.new(1, 0, 0, 0)
-	OptionsContainer.Position = UDim2.new(0, 0, 0, 34)
+	OptionsContainer.Position = UDim2.new(0, 0, 0, 36)
 	OptionsContainer.BackgroundTransparency = 1
 	OptionsContainer.Parent = DropdownFrame
 	
@@ -566,7 +567,7 @@ function Library:AddDropdown(text, options, default, callback)
 	OptionsLayout.Parent = OptionsContainer
 	
 	local ClickDetector = Instance.new("TextButton")
-	ClickDetector.Size = UDim2.new(1, 0, 0, 34)
+	ClickDetector.Size = UDim2.new(1, 0, 0, 36)
 	ClickDetector.BackgroundTransparency = 1
 	ClickDetector.Text = ""
 	ClickDetector.Parent = DropdownFrame
@@ -595,7 +596,7 @@ function Library:AddDropdown(text, options, default, callback)
 		createStroke(OptionButton, CONFIG.Colors.Stroke, 1)
 		
 		local Padding = Instance.new("UIPadding")
-		Padding.PaddingLeft = UDim.new(0.0226, 0)
+		Padding.PaddingLeft = UDim.new(0, 10)
 		Padding.Parent = OptionButton
 		
 		OptionButton.MouseEnter:Connect(function()
@@ -611,7 +612,7 @@ function Library:AddDropdown(text, options, default, callback)
 			SelectedLabel.Text = selected
 			isOpen = false
 			createTween(Arrow, {Rotation = 0}, 0.2):Play()
-			createTween(DropdownFrame, {Size = UDim2.new(1, -10, 0, 34)}, 0.3):Play()
+			createTween(DropdownFrame, {Size = UDim2.new(1, -5, 0, 36)}, 0.3):Play()
 			createTween(DropdownFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
 			pcall(callback, selected)
 		end)
@@ -621,12 +622,12 @@ function Library:AddDropdown(text, options, default, callback)
 		isOpen = not isOpen
 		
 		if isOpen then
-			local targetHeight = 34 + (#options * 28)
+			local targetHeight = 36 + (#options * 28)
 			createTween(Arrow, {Rotation = 180}, 0.2):Play()
-			createTween(DropdownFrame, {Size = UDim2.new(1, -10, 0, targetHeight)}, 0.3):Play()
+			createTween(DropdownFrame, {Size = UDim2.new(1, -5, 0, targetHeight)}, 0.3):Play()
 		else
 			createTween(Arrow, {Rotation = 0}, 0.2):Play()
-			createTween(DropdownFrame, {Size = UDim2.new(1, -10, 0, 34)}, 0.3):Play()
+			createTween(DropdownFrame, {Size = UDim2.new(1, -5, 0, 36)}, 0.3):Play()
 			createTween(DropdownFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
 		end
 	end)
