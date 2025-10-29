@@ -45,11 +45,13 @@ function Library:CreateHub(hubName)
 	Hub.Tabs = {}
 	Hub.CurrentTab = nil
 	
+	local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
+	
 	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = "UILibrary_" .. tostring(math.random(1000, 9999))
+	ScreenGui.Name = hubName
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ScreenGui.ResetOnSpawn = false
-	ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	ScreenGui.Parent = PlayerGui
 	
 	local MainFrame = Instance.new("Frame")
 	MainFrame.Name = "MainFrame"
@@ -65,23 +67,32 @@ function Library:CreateHub(hubName)
 	local TitleLabel = Instance.new("TextLabel")
 	TitleLabel.Name = "Title"
 	TitleLabel.BackgroundTransparency = 1
-	TitleLabel.Position = UDim2.new(0, 0, 0, 8)
-	TitleLabel.Size = UDim2.new(1, 0, 0, 28)
+	TitleLabel.Position = UDim2.new(0, 10, 0, 8)
+	TitleLabel.Size = UDim2.new(1, -60, 0, 28)
 	TitleLabel.Font = Enum.Font.Code
-	TitleLabel.Text = "- " .. hubName .. " -"
+	TitleLabel.Text = hubName
 	TitleLabel.TextColor3 = CONFIG.Colors.Text
 	TitleLabel.TextSize = 16
+	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 	TitleLabel.Parent = MainFrame
+	
+	local TopDivider = Instance.new("Frame")
+	TopDivider.Name = "TopDivider"
+	TopDivider.BackgroundColor3 = CONFIG.Colors.Separator
+	TopDivider.BorderSizePixel = 0
+	TopDivider.Position = UDim2.new(0, 0, 0, 38)
+	TopDivider.Size = UDim2.new(1, 0, 0, 1)
+	TopDivider.Parent = MainFrame
 	
 	local MinimizeButton = Instance.new("TextLabel")
 	MinimizeButton.Name = "MinimizeButton"
 	MinimizeButton.BackgroundTransparency = 1
-	MinimizeButton.Position = UDim2.new(1, -50, 0, 8)
+	MinimizeButton.Position = UDim2.new(1, -45, 0, 9)
 	MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
 	MinimizeButton.Font = Enum.Font.Code
 	MinimizeButton.Text = "-"
 	MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	MinimizeButton.TextSize = 16
+	MinimizeButton.TextSize = 18
 	MinimizeButton.Parent = MainFrame
 	
 	local MinimizeDetector = Instance.new("TextButton")
@@ -679,11 +690,13 @@ end
 function Library:Notify(title, text, duration)
 	duration = duration or 3
 	
+	local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
+	
 	local NotificationGui = Instance.new("ScreenGui")
 	NotificationGui.Name = "Notification"
 	NotificationGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	NotificationGui.ResetOnSpawn = false
-	NotificationGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	NotificationGui.Parent = PlayerGui
 	
 	local NotificationFrame = Instance.new("Frame")
 	NotificationFrame.Size = UDim2.new(0, 300, 0, 80)
