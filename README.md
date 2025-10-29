@@ -13,9 +13,7 @@ local combattab = hub:CreateTab("combat")
 local visualtab = hub:CreateTab("visual")
 local misctab = hub:CreateTab("misc")
 ```
-```lua
 add section
-```
 ```lua
 maintab:AddSection("player controls")
 ```
