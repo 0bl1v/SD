@@ -3,6 +3,9 @@ Library.__index = Library
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+
+local cloneref = cloneref or function(instance) return instance end
+
 local CONFIG = {
 	AnimationSpeed = 0.3,
 	Colors = {
@@ -915,6 +918,80 @@ function Library:AddColorPicker(text, defaultColor, callback)
 		end,
 		GetColor = function()
 			return selectedColor
+		end
+	}
+end
+
+function Library:AddCheckbox(text, default, callback)
+	local checked = default or false
+	
+	local CheckboxFrame = Instance.new("Frame")
+	CheckboxFrame.Size = UDim2.new(1, -10, 0, 34)
+	CheckboxFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
+	CheckboxFrame.BorderSizePixel = 0
+	CheckboxFrame.Parent = self.Content or self.ContentContainer
+	createStroke(CheckboxFrame, CONFIG.Colors.Stroke, 1)
+	
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(0.75, 0, 1, 0)
+	Label.BackgroundTransparency = 1
+	Label.Font = Enum.Font.Code
+	Label.Text = text
+	Label.TextColor3 = CONFIG.Colors.Text
+	Label.TextSize = 14
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	Label.Position = UDim2.new(0.0226, 0, 0, 0)
+	Label.Parent = CheckboxFrame
+	
+	local CheckboxBox = Instance.new("Frame")
+	CheckboxBox.Size = UDim2.new(0, 20, 0, 20)
+	CheckboxBox.Position = UDim2.new(0.88, 0, 0.5, -10)
+	CheckboxBox.BackgroundColor3 = CONFIG.Colors.ElementBg
+	CheckboxBox.BorderSizePixel = 0
+	CheckboxBox.Parent = CheckboxFrame
+	createStroke(CheckboxBox, CONFIG.Colors.Stroke, 1)
+	
+	local CheckMark = Instance.new("TextLabel")
+	CheckMark.Size = UDim2.new(1, 0, 1, 0)
+	CheckMark.BackgroundTransparency = 1
+	CheckMark.Font = Enum.Font.Code
+	CheckMark.Text = checked and "✓" or ""
+	CheckMark.TextColor3 = CONFIG.Colors.ToggleOn
+	CheckMark.TextSize = 18
+	CheckMark.Parent = CheckboxBox
+	
+	local ClickDetector = Instance.new("TextButton")
+	ClickDetector.Size = UDim2.new(1, 0, 1, 0)
+	ClickDetector.BackgroundTransparency = 1
+	ClickDetector.Text = ""
+	ClickDetector.Parent = CheckboxFrame
+	
+	ClickDetector.MouseEnter:Connect(function()
+		createTween(CheckboxFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
+	end)
+	
+	ClickDetector.MouseLeave:Connect(function()
+		createTween(CheckboxFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
+	end)
+	
+	ClickDetector.MouseButton1Click:Connect(function()
+		checked = not checked
+		CheckMark.Text = checked and "✓" or ""
+		createTween(CheckMark, {TextColor3 = checked and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff}, 0.2):Play()
+		pcall(callback, checked)
+	end)
+	
+	table.insert(self.Elements, CheckboxFrame)
+	
+	return {
+		Frame = CheckboxFrame,
+		SetValue = function(value)
+			checked = value
+			CheckMark.Text = checked and "✓" or ""
+			CheckMark.TextColor3 = checked and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
+		end,
+		GetValue = function()
+			return checked
 		end
 	}
 end
