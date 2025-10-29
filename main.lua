@@ -52,8 +52,9 @@ function Library:CreateHub(hubName)
 	MainFrame.Name = "MainFrame"
 	MainFrame.BackgroundColor3 = CONFIG.Colors.Background
 	MainFrame.BorderSizePixel = 0
-	MainFrame.Position = UDim2.new(0.265, 0, 0.245, 0)
-	MainFrame.Size = UDim2.new(0, 514, 0, 328)
+	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	MainFrame.Size = UDim2.new(0, 520, 0, 340)
 	MainFrame.Parent = ScreenGui
 	MainFrame.ClipsDescendants = true
 	createStroke(MainFrame, CONFIG.Colors.Stroke, 1)
@@ -61,8 +62,8 @@ function Library:CreateHub(hubName)
 	local TitleLabel = Instance.new("TextLabel")
 	TitleLabel.Name = "Title"
 	TitleLabel.BackgroundTransparency = 1
-	TitleLabel.Position = UDim2.new(0, 0, 0.027, 0)
-	TitleLabel.Size = UDim2.new(0, 513, 0, 28)
+	TitleLabel.Position = UDim2.new(0, 0, 0, 8)
+	TitleLabel.Size = UDim2.new(1, 0, 0, 28)
 	TitleLabel.Font = Enum.Font.Code
 	TitleLabel.Text = "- " .. hubName .. " -"
 	TitleLabel.TextColor3 = CONFIG.Colors.Text
@@ -72,7 +73,7 @@ function Library:CreateHub(hubName)
 	local MinimizeButton = Instance.new("TextLabel")
 	MinimizeButton.Name = "MinimizeButton"
 	MinimizeButton.BackgroundTransparency = 1
-	MinimizeButton.Position = UDim2.new(0.88, 0, 0.0274390243, 0)
+	MinimizeButton.Position = UDim2.new(1, -50, 0, 8)
 	MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
 	MinimizeButton.Font = Enum.Font.Code
 	MinimizeButton.Text = "-"
@@ -102,7 +103,7 @@ function Library:CreateHub(hubName)
 		isMinimized = not isMinimized
 		
 		if isMinimized then
-			MainFrame.Size = UDim2.new(0, 514, 0, 37)
+			MainFrame.Size = UDim2.new(0, 520, 0, 40)
 			MinimizeButton.Text = "+"
 			TabContainer.Visible = false
 			LeftSeparator.Visible = false
@@ -124,7 +125,7 @@ function Library:CreateHub(hubName)
 	CloseButton.BackgroundTransparency = 1
 	CloseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CloseButton.BorderSizePixel = 0
-	CloseButton.Position = UDim2.new(0.941634238, 0, 0.0274390243, 0)
+	CloseButton.Position = UDim2.new(1, -28, 0, 8)
 	CloseButton.Size = UDim2.new(0, 20, 0, 20)
 	CloseButton.Font = Enum.Font.Code
 	CloseButton.Text = "x"
@@ -154,8 +155,8 @@ function Library:CreateHub(hubName)
 	local TabContainer = Instance.new("Frame")
 	TabContainer.Name = "TabContainer"
 	TabContainer.BackgroundTransparency = 1
-	TabContainer.Position = UDim2.new(0.025, 0, 0.137, 0)
-	TabContainer.Size = UDim2.new(0, 75, 0, 260)
+	TabContainer.Position = UDim2.new(0, 12, 0, 45)
+	TabContainer.Size = UDim2.new(0, 80, 1, -60)
 	TabContainer.Parent = MainFrame
 	
 	local TabLayout = Instance.new("UIListLayout")
@@ -166,22 +167,22 @@ function Library:CreateHub(hubName)
 	local LeftSeparator = Instance.new("Frame")
 	LeftSeparator.BackgroundColor3 = CONFIG.Colors.Separator
 	LeftSeparator.BorderSizePixel = 0
-	LeftSeparator.Position = UDim2.new(0, 0, 0.113, 0)
-	LeftSeparator.Size = UDim2.new(0, 1, 0, 291)
+	LeftSeparator.Position = UDim2.new(0, 100, 0, 40)
+	LeftSeparator.Size = UDim2.new(0, 1, 1, -45)
 	LeftSeparator.Parent = MainFrame
 	
 	local RightSeparator = Instance.new("Frame")
 	RightSeparator.BackgroundColor3 = CONFIG.Colors.Separator
 	RightSeparator.BorderSizePixel = 0
-	RightSeparator.Position = UDim2.new(0.177, 0, 0.113, 0)
-	RightSeparator.Size = UDim2.new(0, 1, 0, 291)
+	RightSeparator.Position = UDim2.new(0, 100, 0, 40)
+	RightSeparator.Size = UDim2.new(0, 1, 1, -45)
 	RightSeparator.Parent = MainFrame
 	
 	local ContentContainer = Instance.new("Frame")
 	ContentContainer.Name = "ContentContainer"
 	ContentContainer.BackgroundTransparency = 1
-	ContentContainer.Position = UDim2.new(0.204, 0, 0.137, 0)
-	ContentContainer.Size = UDim2.new(0, 399, 0, 260)
+	ContentContainer.Position = UDim2.new(0, 110, 0, 45)
+	ContentContainer.Size = UDim2.new(1, -120, 1, -55)
 	ContentContainer.Parent = MainFrame
 	
 	local dragging, dragInput, dragStart, startPos
@@ -287,15 +288,15 @@ function Library:AddButton(text, callback)
 	ButtonFrame.Name = "ButtonElement"
 	ButtonFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
 	ButtonFrame.BorderSizePixel = 0
-	ButtonFrame.Size = UDim2.new(1, -10, 0, 34)
+	ButtonFrame.Size = UDim2.new(1, -5, 0, 36)
 	ButtonFrame.Parent = self.Content
 	createStroke(ButtonFrame, CONFIG.Colors.Stroke, 1)
 	
 	local ButtonLabel = Instance.new("TextLabel")
 	ButtonLabel.Name = "Label"
 	ButtonLabel.BackgroundTransparency = 1
-	ButtonLabel.Position = UDim2.new(0.0226, 0, 0, 0)
-	ButtonLabel.Size = UDim2.new(1, -10, 1, 0)
+	ButtonLabel.Position = UDim2.new(0, 10, 0, 0)
+	ButtonLabel.Size = UDim2.new(1, -20, 1, 0)
 	ButtonLabel.Font = Enum.Font.Code
 	ButtonLabel.Text = text
 	ButtonLabel.TextColor3 = CONFIG.Colors.Text
@@ -319,9 +320,9 @@ function Library:AddButton(text, callback)
 	end)
 	
 	ClickDetector.MouseButton1Click:Connect(function()
-		createTween(ButtonFrame, {Size = UDim2.new(1, -15, 0, 32)}, 0.1):Play()
+		createTween(ButtonFrame, {Size = UDim2.new(1, -8, 0, 34)}, 0.1):Play()
 		wait(0.1)
-		createTween(ButtonFrame, {Size = UDim2.new(1, -10, 0, 34)}, 0.1):Play()
+		createTween(ButtonFrame, {Size = UDim2.new(1, -5, 0, 36)}, 0.1):Play()
 		pcall(callback)
 	end)
 	
@@ -333,26 +334,26 @@ function Library:AddToggle(text, default, callback)
 	local toggled = default or false
 	
 	local ToggleFrame = Instance.new("Frame")
-	ToggleFrame.Size = UDim2.new(1, -10, 0, 34)
+	ToggleFrame.Size = UDim2.new(1, -5, 0, 36)
 	ToggleFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
 	ToggleFrame.BorderSizePixel = 0
 	ToggleFrame.Parent = self.Content
 	createStroke(ToggleFrame, CONFIG.Colors.Stroke, 1)
 	
 	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.7, 0, 1, 0)
+	Label.Size = UDim2.new(1, -60, 1, 0)
+	Label.Position = UDim2.new(0, 10, 0, 0)
 	Label.BackgroundTransparency = 1
 	Label.Font = Enum.Font.Code
 	Label.Text = text
 	Label.TextColor3 = CONFIG.Colors.Text
 	Label.TextSize = 14
 	Label.TextXAlignment = Enum.TextXAlignment.Left
-	Label.Position = UDim2.new(0.0226, 0, 0, 0)
 	Label.Parent = ToggleFrame
 	
 	local ToggleButton = Instance.new("TextButton")
 	ToggleButton.Size = UDim2.new(0, 40, 0, 20)
-	ToggleButton.Position = UDim2.new(0.88, 0, 0.5, -10)
+	ToggleButton.Position = UDim2.new(1, -48, 0.5, -10)
 	ToggleButton.BackgroundColor3 = toggled and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
 	ToggleButton.BorderSizePixel = 0
 	ToggleButton.Text = ""
