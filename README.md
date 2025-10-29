@@ -48,31 +48,36 @@ add label
 maintab:AddLabel("this is a label example")
 ```
 add dropdown
-lua
+```lua
 local dropdown1 = maintab:AddDropdown("dropdown example", {"option1", "option2", "option3", "option4"}, "option1", function(value)
     print("selected:", value)
     library:Notify("dropdown", "selected: " .. value, 2)
 end)
+```
 add keybind
-lua
+```lua
 local flykeybind = misctab:AddKeybind("fly", Enum.KeyCode.F, function()
     print("fly toggled!")
 end)
+```
 add color picker
-lua
+```lua
 local playercolor = visualtab:AddColorPicker("player color", Color3.fromRGB(255, 0, 0), function(color)
     print("player color:", color)
 end)
+```
 add radio buttons
-lua
+```lua
 local radio1 = misctab:AddRadioButtons("select mode", {"mode1", "mode2", "mode3"}, "mode1", function(value)
     print("selected mode:", value)
 end)
+```
 notify
-lua
+```lua
 library:Notify("welcome", "script loaded successfully!", 5)
+```
 getters and setters
-lua
+```lua
 toggle1.SetValue(true)
 print("toggle value:", toggle1.GetValue())
 
@@ -90,3 +95,4 @@ print("player color:", playercolor.GetColor())
 
 radio1.SetValue("mode3")
 print("radio value:", radio1.GetValue())
+```
