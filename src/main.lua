@@ -87,7 +87,7 @@ function Library:CreateHub(hubName)
 	local MinimizeButton = Instance.new("TextLabel")
 	MinimizeButton.Name = "MinimizeButton"
 	MinimizeButton.BackgroundTransparency = 1
-	MinimizeButton.Position = UDim2.new(1, -55, 0, 9)
+	MinimizeButton.Position = UDim2.new(1, -50, 0, 9)
 	MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
 	MinimizeButton.Font = Enum.Font.Code
 	MinimizeButton.Text = "-"
@@ -136,7 +136,7 @@ function Library:CreateHub(hubName)
 	local CloseButton = Instance.new("TextLabel")
 	CloseButton.Name = "CloseButton"
 	CloseButton.BackgroundTransparency = 1
-	CloseButton.Position = UDim2.new(1, -23, 0, 9)
+	CloseButton.Position = UDim2.new(1, -28, 0, 9)
 	CloseButton.Size = UDim2.new(0, 20, 0, 20)
 	CloseButton.Font = Enum.Font.Code
 	CloseButton.Text = "×"
@@ -736,79 +736,6 @@ function Library:Notify(title, text, duration)
 	NotificationGui:Destroy()
 end
 
-function Library:AddKeybind(text, defaultKey, callback)
-	local currentKey = defaultKey or Enum.KeyCode.E
-	local waitingForKey = false
-	
-	local KeybindFrame = Instance.new("Frame")
-	KeybindFrame.Size = UDim2.new(1, -10, 0, 34)
-	KeybindFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
-	KeybindFrame.BorderSizePixel = 0
-	KeybindFrame.Parent = self.Content or self.ContentContainer
-	createStroke(KeybindFrame, CONFIG.Colors.Stroke, 1)
-	
-	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.65, 0, 1, 0)
-	Label.Position = UDim2.new(0.0226, 0, 0, 0)
-	Label.BackgroundTransparency = 1
-	Label.Font = Enum.Font.Code
-	Label.Text = text
-	Label.TextColor3 = CONFIG.Colors.Text
-	Label.TextSize = 14
-	Label.TextXAlignment = Enum.TextXAlignment.Left
-	Label.Parent = KeybindFrame
-	
-	local KeyButton = Instance.new("TextButton")
-	KeyButton.Size = UDim2.new(0, 60, 0, 24)
-	KeyButton.Position = UDim2.new(0.88, -40, 0.5, -12)
-	KeyButton.BackgroundColor3 = CONFIG.Colors.Separator
-	KeyButton.BorderSizePixel = 0
-	KeyButton.Font = Enum.Font.Code
-	KeyButton.Text = currentKey.Name
-	KeyButton.TextColor3 = CONFIG.Colors.Text
-	KeyButton.TextSize = 13
-	KeyButton.Parent = KeybindFrame
-	createStroke(KeyButton, CONFIG.Colors.Stroke, 1)
-	
-	KeyButton.MouseEnter:Connect(function()
-		createTween(KeybindFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
-	end)
-	
-	KeyButton.MouseLeave:Connect(function()
-		createTween(KeybindFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
-	end)
-	
-	KeyButton.MouseButton1Click:Connect(function()
-		waitingForKey = true
-		KeyButton.Text = "..."
-	end)
-	
-	UserInputService.InputBegan:Connect(function(input)
-		if waitingForKey and input.UserInputType == Enum.UserInputType.Keyboard then
-			currentKey = input.KeyCode
-			KeyButton.Text = currentKey.Name
-			waitingForKey = false
-		end
-		
-		if input.KeyCode == currentKey and not waitingForKey then
-			pcall(callback)
-		end
-	end)
-	
-	table.insert(self.Elements, KeybindFrame)
-	
-	return {
-		Frame = KeybindFrame,
-		SetKey = function(newKey)
-			currentKey = newKey
-			KeyButton.Text = currentKey.Name
-		end,
-		GetKey = function()
-			return currentKey
-		end
-	}
-end
-
 function Library:AddColorPicker(text, defaultColor, callback)
 	local selectedColor = defaultColor or Color3.fromRGB(255, 255, 255)
 	local isOpen = false
@@ -928,80 +855,6 @@ function Library:AddColorPicker(text, defaultColor, callback)
 		end,
 		GetColor = function()
 			return selectedColor
-		end
-	}
-end
-
-function Library:AddCheckbox(text, default, callback)
-	local checked = default or false
-	
-	local CheckboxFrame = Instance.new("Frame")
-	CheckboxFrame.Size = UDim2.new(1, -10, 0, 34)
-	CheckboxFrame.BackgroundColor3 = CONFIG.Colors.ElementBg
-	CheckboxFrame.BorderSizePixel = 0
-	CheckboxFrame.Parent = self.Content or self.ContentContainer
-	createStroke(CheckboxFrame, CONFIG.Colors.Stroke, 1)
-	
-	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.75, 0, 1, 0)
-	Label.BackgroundTransparency = 1
-	Label.Font = Enum.Font.Code
-	Label.Text = text
-	Label.TextColor3 = CONFIG.Colors.Text
-	Label.TextSize = 14
-	Label.TextXAlignment = Enum.TextXAlignment.Left
-	Label.Position = UDim2.new(0.0226, 0, 0, 0)
-	Label.Parent = CheckboxFrame
-	
-	local CheckboxBox = Instance.new("Frame")
-	CheckboxBox.Size = UDim2.new(0, 20, 0, 20)
-	CheckboxBox.Position = UDim2.new(0.88, 0, 0.5, -10)
-	CheckboxBox.BackgroundColor3 = CONFIG.Colors.ElementBg
-	CheckboxBox.BorderSizePixel = 0
-	CheckboxBox.Parent = CheckboxFrame
-	createStroke(CheckboxBox, CONFIG.Colors.Stroke, 1)
-	
-	local CheckMark = Instance.new("TextLabel")
-	CheckMark.Size = UDim2.new(1, 0, 1, 0)
-	CheckMark.BackgroundTransparency = 1
-	CheckMark.Font = Enum.Font.Code
-	CheckMark.Text = checked and "✓" or ""
-	CheckMark.TextColor3 = CONFIG.Colors.ToggleOn
-	CheckMark.TextSize = 18
-	CheckMark.Parent = CheckboxBox
-	
-	local ClickDetector = Instance.new("TextButton")
-	ClickDetector.Size = UDim2.new(1, 0, 1, 0)
-	ClickDetector.BackgroundTransparency = 1
-	ClickDetector.Text = ""
-	ClickDetector.Parent = CheckboxFrame
-	
-	ClickDetector.MouseEnter:Connect(function()
-		createTween(CheckboxFrame, {BackgroundColor3 = CONFIG.Colors.ElementBgHover}, 0.2):Play()
-	end)
-	
-	ClickDetector.MouseLeave:Connect(function()
-		createTween(CheckboxFrame, {BackgroundColor3 = CONFIG.Colors.ElementBg}, 0.2):Play()
-	end)
-	
-	ClickDetector.MouseButton1Click:Connect(function()
-		checked = not checked
-		CheckMark.Text = checked and "✓" or ""
-		createTween(CheckMark, {TextColor3 = checked and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff}, 0.2):Play()
-		pcall(callback, checked)
-	end)
-	
-	table.insert(self.Elements, CheckboxFrame)
-	
-	return {
-		Frame = CheckboxFrame,
-		SetValue = function(value)
-			checked = value
-			CheckMark.Text = checked and "✓" or ""
-			CheckMark.TextColor3 = checked and CONFIG.Colors.ToggleOn or CONFIG.Colors.ToggleOff
-		end,
-		GetValue = function()
-			return checked
 		end
 	}
 end
