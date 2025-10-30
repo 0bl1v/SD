@@ -87,7 +87,7 @@ function Library:CreateHub(hubName)
 	local MinimizeButton = Instance.new("TextLabel")
 	MinimizeButton.Name = "MinimizeButton"
 	MinimizeButton.BackgroundTransparency = 1
-	MinimizeButton.Position = UDim2.new(1, -50, 0, 9)
+	MinimizeButton.Position = UDim2.new(1, -45, 0, 9)
 	MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
 	MinimizeButton.Font = Enum.Font.Code
 	MinimizeButton.Text = "-"
@@ -135,13 +135,16 @@ function Library:CreateHub(hubName)
 	
 	local CloseButton = Instance.new("TextLabel")
 	CloseButton.Name = "CloseButton"
+	CloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	CloseButton.BackgroundTransparency = 1
-	CloseButton.Position = UDim2.new(1, -28, 0, 9)
+	CloseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	CloseButton.BorderSizePixel = 0
+	CloseButton.Position = UDim2.new(1, -28, 0, 8)
 	CloseButton.Size = UDim2.new(0, 20, 0, 20)
 	CloseButton.Font = Enum.Font.Code
-	CloseButton.Text = "×"
+	CloseButton.Text = "x"
 	CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	CloseButton.TextSize = 20
+	CloseButton.TextSize = 16
 	CloseButton.Parent = MainFrame
 	
 	local CloseDetector = Instance.new("TextButton")
